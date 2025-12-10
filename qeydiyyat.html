@@ -1,14 +1,23 @@
 
+
+
 <!DOCTYPE html>
 <html lang="az">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
   <meta charset="UTF-8">
   <title>Google ilə giriş</title>
   <style>
     body{
         display: flex;
-        flex-direction: column;
-        gap: 10px
+        flex-direction: row;
+        gap: 10px;
+        margin: 0;
+        height: 100vh;
+        overflow: hidden;
+        
+        
 
     }
     .salam{
@@ -19,13 +28,63 @@
     }
     button{
       border-radius: 20px;
+      font-family: 'poppins';
+      transition: 0.3s ease;
+      
+
     }
     .salam:hover{
       background-color: aquamarine;
     }
     button:hover{
       background-color: aquamarine;
+      transform: scale(1.1);
     }
+    .esas{
+      background-color: aqua;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      align-items: center;
+      height: 100vh;
+      width: 50%;
+      justify-content: center;
+      border-radius: 0;
+      margin-right: 0;
+      
+    }
+    
+  .picture{
+  width: 50%;
+  height: 100vh;
+  border-radius: 20px;
+  
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  /* şəkil tam sahəni doldursun */
+  border-radius: 0;
+  margin-left: 0;
+}
+.picture img{
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;   /* şəkil tam sahəni doldursun */
+  border-radius: 0;
+  margin-left: 0;
+}
+h2{
+  text-align: center;
+  justify-content: center;
+  font-family: 'poppins';
+  font-weight: 600px;
+  padding-bottom: 50px;
+  margin: 5px;
+}
+
+
+
   </style>
 
   <!-- Firebase CDN -->
@@ -53,7 +112,10 @@
       signInWithPopup(auth, provider)
         .then((result) => {
           const user = result.user;
+         
+
           alert("Giriş uğurlu! " + user.email);
+          window.location.href = "https://typingmasteraz.github.io/ayda/salam.html";
           console.log(user);
         })
         .catch((error) => {
@@ -65,14 +127,19 @@
 </head>
 
 <body style="display:flex; justify-content:center; align-items:center; height:100vh;">
-
-  <button onclick="googleLogin()" style="padding:15px 25px; font-size:18px;">
-    Google ilə giriş
+<div class="esas">
+    <h2>TypingMaster ilə sürətli, dəqiq və peşəkar klaviatura yazma bacarığını inkişaf etdir!</h2>
+  <button onclick="googleLogin()" style="padding:15px 25px; font-size:18px; width: 174px;">
+    Google ilə Qeydiyyat
   </button>
   <button class="salam" onclick="window.location.href='https://typingmasteraz.github.io/ayda/daxil%20ol.html'">
-    Emaille giris
+    Emaillə Qeydiyyat
     
   </button>
 
+</div>
+<div class="picture">
+  <img src="https://cdn.mos.cms.futurecdn.net/3kQCtpnfHoUq5cBsLqKTFk.jpg">
+</div>
 </body>
 </html>
