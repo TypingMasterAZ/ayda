@@ -1,6 +1,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="az">
 <head>
@@ -25,11 +26,23 @@
       width: 174px;
       border-radius: 20px;
       font-size: 15px;
+       display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px
+      
+    }
+    .salam img{
+       width: 30px;
+       height: 22px
+     
+      
     }
     button{
       border-radius: 20px;
       font-family: 'poppins';
       transition: 0.3s ease;
+      
       
 
     }
@@ -130,9 +143,11 @@ h2{
 <div class="esas">
     <h2>TypingMaster ilə sürətli, dəqiq və peşəkar klaviatura yazma bacarığını inkişaf etdir!</h2>
   <button onclick="googleLogin()" style="padding:15px 25px; font-size:18px; width: 174px;">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
     Google ilə Qeydiyyat
   </button>
   <button class="salam" onclick="window.location.href='https://typingmasteraz.github.io/ayda/daxil%20ol.html'">
+     <img src="https://camo.githubusercontent.com/9e521c86648daf3b6e1147eb7c337007ecafad5111e878e18d96fe5e67ef2023/68747470733a2f2f6c6f676f732d776f726c642e6e65742f77702d636f6e74656e742f75706c6f6164732f323032302f31312f476d61696c2d4c6f676f2e706e67">
     Emaillə Qeydiyyat
     
   </button>
@@ -143,3 +158,4 @@ h2{
 </div>
 </body>
 </html>
+
