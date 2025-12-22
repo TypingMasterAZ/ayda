@@ -1,1364 +1,333 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hava Proqnozu</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.10/css/weather-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* CSS Kodu */
-        /* CSS Kodu */
-        :root {
-            --background-color-light: #f0f2f5;
-            --card-background-light: #ffffff;
-            --text-color-light: #333333;
-            --secondary-text-color-light: #666666;
-            --accent-color-light: #007bff;
-            --accent-dark-light: #0056b3;
-            --header-gradient-start-light: #6a11cb;
-            --header-gradient-end-light: #2575fc;
-            --border-color-light: #e0e0e0;
-            --shadow-light-light: rgba(0, 0, 0, 0.08);
-            --shadow-medium-light: rgba(0, 0, 0, 0.15);
-            --favorite-star-light: #ffc107;
-            --error-bg-light: #ffe0e0;
-            --error-text-light: #dc3545;
-            --warning-bg-light: #fff3cd;
-            --warning-text-light: #856404;
-            --temperature-icon-color-light: #ffa500;
-
-            /* Dark Theme Variables */
-            --background-color-dark: #212121;
-            --card-background-dark: #333333;
-            --text-color-dark: #e0e0e0;
-            --secondary-text-color-dark: #b0b0b0;
-            --accent-color-dark: #8a6cfa;
-            --accent-dark-dark: #6c5ce7;
-            --header-gradient-start-dark: #3a0ca3;
-            --header-gradient-end-dark: #1b263b;
-            --border-color-dark: #555555;
-            --shadow-light-dark: rgba(0, 0, 0, 0.3);
-            --shadow-medium-dark: rgba(0, 0, 0, 0.4);
-            --favorite-star-dark: #ffd700;
-            --error-bg-dark: #4a1c1c;
-            --error-text-dark: #ff7070;
-            --warning-bg-dark: #4a3800;
-            --warning-text-dark: #ffd55a;
-            --temperature-icon-color-dark: #ffcc00;
-
-            /* Active Theme Variables */
-            --background-color: var(--background-color-light);
-            --card-background: var(--card-background-light);
-            --text-color: var(--text-color-light);
-            --secondary-text-color: var(--secondary-text-color-light);
-            --accent-color: var(--accent-color-light);
-            --accent-dark: var(--accent-dark-light);
-            --header-gradient-start: var(--header-gradient-start-light);
-            --header-gradient-end: var(--header-gradient-end-light);
-            --border-color: var(--border-color-light);
-            --shadow-light: var(--shadow-light-light);
-            --shadow-medium: var(--shadow-medium-light);
-            --favorite-star: var(--favorite-star-light);
-            --error-bg: var(--error-bg-light);
-            --error-text: var(--error-text-light);
-            --warning-bg: var(--warning-bg-light);
-            --warning-text: var(--warning-text-light);
-            --temperature-icon-color: var(--temperature-icon-color-light);
-        }
-
-        [data-theme="dark"] {
-            --background-color: var(--background-color-dark);
-            --card-background: var(--card-background-dark);
-            --text-color: var(--text-color-dark);
-            --secondary-text-color: var(--secondary-text-color-dark);
-            --accent-color: var(--accent-color-dark);
-            --accent-dark: var(--accent-dark-dark);
-            --header-gradient-start: var(--header-gradient-start-dark);
-            --header-gradient-end: var(--header-gradient-end-dark);
-            --border-color: var(--border-color-dark);
-            --shadow-light: var(--shadow-light-dark);
-            --shadow-medium: var(--shadow-medium-dark);
-            --favorite-star: var(--favorite-star-dark);
-            --error-bg: var(--error-bg-dark);
-            --error-text: var(--error-text-dark);
-            --warning-bg: var(--warning-bg-dark);
-            --warning-text: var(--warning-text-dark);
-            --temperature-icon-color: var(--temperature-icon-color-dark);
-        }
-
-        /* RGB dəyərləri üçün dəyişənlər */
-        body[data-theme="light"] {
-            --card-background-rgb-start: 255, 255, 255;
-            --border-color-rgb-start: 224, 224, 224;
-            --accent-color-rgb: 0, 123, 255;
-        }
-        body[data-theme="dark"] {
-            --card-background-rgb-dark-start: 51, 51, 51;
-            --border-color-rgb-dark-start: 85, 85, 85;
-            --accent-color-rgb: 138, 108, 250;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--background-color), #e9ecef);
-            color: var(--text-color);
-            line-height: 1.6;
-            transition: background-color 0.4s ease, color 0.4s ease;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px;
-            display: grid;
-            gap: 30px;
-            grid-template-columns: 1fr;
-            flex-grow: 1;
-        }
-
-        @media (min-width: 768px) {
-            .container {
-                grid-template-columns: 2fr 1fr;
-            }
-        }
-
-        header {
-            background: var(--header-gradient-start);
-            background: linear-gradient(to right, var(--header-gradient-start) 0%, var(--header-gradient-end) 100%);
-            color: #ffffff;
-            padding: 20px 30px;
-            text-align: center;
-            box-shadow: 0 8px 20px var(--shadow-medium);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            backdrop-filter: blur(5px);
-            background-color: rgba(106, 17, 203, 0.8);
-        }
-
-        header h1 {
-            font-size: 2.5em;
-            margin: 0;
-            flex-grow: 1;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-        }
-
-        .theme-switch-wrapper {
-            display: flex;
-            align-items: center;
-            margin-left: 20px;
-        }
-
-        .theme-switch {
-            display: inline-block;
-            height: 38px;
-            position: relative;
-            width: 70px;
-        }
-
-        .theme-switch input {
-            display: none;
-        }
-
-        .slider {
-            background-color: var(--secondary-text-color);
-            bottom: 0;
-            cursor: pointer;
-            left: 0;
-            position: absolute;
-            right: 0;
-            top: 0;
-            transition: .4s;
-            border-radius: 38px;
-        }
-
-        .slider:before {
-            background-color: var(--card-background);
-            bottom: 4px;
-            content: "";
-            height: 30px;
-            left: 4px;
-            position: absolute;
-            transition: .4s;
-            width: 30px;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: var(--accent-color);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(32px);
-        }
-
-        .search-section {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .search-section input[type="text"] {
-            flex-grow: 1;
-            padding: 15px 20px;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            font-size: 1.15em;
-            background-color: var(--card-background);
-            color: var(--text-color);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: inset 0 2px 5px var(--shadow-light);
-        }
-
-        .search-section input[type="text"]:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
-            outline: none;
-        }
-
-        .search-section button {
-            padding: 15px 30px;
-            background-color: var(--accent-color);
-            color: #ffffff;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 1.15em;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
-        }
-
-        .search-section button:hover {
-            background-color: var(--accent-dark);
-            transform: translateY(-5px);
-            box-shadow: 0 7px 20px rgba(0, 123, 255, 0.4);
-        }
-
-        .card {
-            background-color: var(--card-background);
-            border-radius: 20px;
-            padding: 35px;
-            box-shadow: 0 10px 30px var(--shadow-medium);
-            transition: background-color 0.4s ease, box-shadow 0.4s ease;
-            margin-bottom: 25px;
-            border: 1px solid var(--border-color);
-            background: rgba(var(--card-background-rgb-start, 255, 255, 255), 0.8);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(var(--border-color-rgb-start, 224, 224, 224), 0.2);
-            border-right-color: rgba(var(--border-color-rgb-start, 224, 224, 224), 0.1);
-            border-bottom-color: rgba(var(--border-color-rgb-start, 224, 224, 224), 0.1);
-        }
-        [data-theme="dark"] .card {
-             background: rgba(var(--card-background-rgb-dark-start, 51, 51, 51), 0.8);
-             border: 1px solid rgba(var(--border-color-rgb-dark-start, 85, 85, 85), 0.2);
-             border-right-color: rgba(var(--border-color-rgb-dark-start, 85, 85, 85), 0.1);
-             border-bottom-color: rgba(var(--border-color-rgb-dark-start, 85, 85, 85), 0.1);
-        }
-
-        .weather-info h2, .forecast-section h2, .favorite-locations h2, .notification-settings h2 {
-            font-size: 2em;
-            color: var(--accent-color);
-            margin-bottom: 30px;
-            border-bottom: 4px solid var(--border-color);
-            padding-bottom: 15px;
-            text-align: center;
-            letter-spacing: 1px;
-        }
-
-        .current-weather {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .location-name {
-            font-size: 3.2em;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: var(--text-color);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .local-time {
-            font-size: 1.3em;
-            color: var(--secondary-text-color);
-            margin-bottom: 25px;
-        }
-
-        .local-time i {
-            margin-right: 10px;
-            color: var(--accent-color);
-        }
-
-        .temperature {
-            font-size: 6em;
-            font-weight: 700;
-            color: var(--accent-color);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .temperature i.wi {
-            font-size: 0.9em;
-            color: var(--temperature-icon-color);
-        }
-
-        .description {
-            font-size: 1.8em;
-            color: var(--secondary-text-color);
-            margin-top: 15px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-
-        .details {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 40px;
-            width: 100%;
-        }
-
-        .detail-item {
-            background-color: var(--background-color);
-            padding: 22px 28px;
-            border-radius: 15px;
-            text-align: center;
-            flex: 1 1 calc(30% - 30px);
-            min-width: 170px;
-            box-shadow: 0 5px 12px var(--shadow-light);
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            border: 1px solid var(--border-color);
-        }
-
-        .detail-item:hover {
-            transform: translateY(-7px);
-            box-shadow: 0 8px 20px var(--shadow-medium);
-        }
-
-        .detail-item p {
-            font-size: 1.2em;
-            margin-bottom: 10px;
-            color: var(--secondary-text-color);
-        }
-
-        .detail-item span {
-            font-size: 1.6em;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-
-        .add-favorite-btn {
-            background-color: var(--accent-color);
-            color: #ffffff;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 1.2em;
-            font-weight: 600;
-            margin-top: 35px;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
-        }
-
-        .add-favorite-btn:hover {
-            background-color: var(--accent-dark);
-            transform: translateY(-5px);
-            box-shadow: 0 7px 20px rgba(0, 123, 255, 0.4);
-        }
-
-        .alerts {
-            margin-top: 35px;
-            padding: 25px;
-            border-radius: 15px;
-            font-weight: 500;
-            background-color: var(--warning-bg);
-            color: var(--warning-text);
-            text-align: center;
-            border: 1px solid var(--warning-text);
-            animation: fadeIn 0.6s ease-out;
-            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.2);
-        }
-
-        .alerts.no-alerts {
-            background-color: var(--card-background);
-            color: var(--secondary-text-color);
-            border: 1px solid var(--border-color);
-            font-style: italic;
-            box-shadow: none;
-        }
-
-        .alerts h3 {
-            margin-bottom: 12px;
-            font-size: 1.6em;
-            color: var(--warning-text);
-        }
-
-        .alerts ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .alerts li {
-            margin-bottom: 10px;
-            font-size: 1.2em;
-            line-height: 1.4;
-        }
-
-        .forecast-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-
-        .forecast-item {
-            background-color: var(--background-color);
-            padding: 22px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 12px var(--shadow-light);
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            border: 1px solid var(--border-color);
-        }
-
-        .forecast-item:hover {
-            transform: translateY(-7px);
-            box-shadow: 0 8px 20px var(--shadow-medium);
-        }
-
-        .forecast-item p {
-            margin-bottom: 10px;
-            font-size: 1.1em;
-            color: var(--secondary-text-color);
-        }
-
-        .forecast-item .temp {
-            font-size: 1.8em;
-            font-weight: 600;
-            color: var(--text-color);
-            margin-top: 10px;
-        }
-
-        .forecast-item .icon {
-            font-size: 3.2em;
-            margin-bottom: 10px;
-            color: var(--accent-color);
-        }
-
-        .forecast-item .pop-text { /* Yağıntı faizi mətn ölçüsü */
-            font-size: 0.95em;
-            color: var(--accent-color);
-            font-weight: 500;
-        }
-
-        #map {
-            height: 500px;
-            width: 100%;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px var(--shadow-medium);
-            transition: box-shadow 0.3s ease;
-        }
-
-        .favorite-locations ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .favorite-locations li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 0;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 1.3em;
-            color: var(--text-color);
-            transition: background-color 0.2s ease;
-        }
-
-        .favorite-locations li:last-child {
-            border-bottom: none;
-        }
-
-        .favorite-locations li:hover {
-            background-color: var(--background-color);
-            cursor: pointer;
-        }
-
-        .favorite-locations li span {
-            flex-grow: 1;
-            cursor: pointer;
-            padding-right: 15px;
-        }
-
-        .favorite-locations button {
-            background: none;
-            border: none;
-            color: var(--accent-color);
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 600;
-            transition: color 0.3s ease, transform 0.2s ease;
-            padding: 5px 10px;
-            border-radius: 8px;
-        }
-
-        .favorite-locations button:hover {
-            color: var(--accent-dark);
-            transform: translateX(5px);
-            background-color: rgba(var(--accent-color-rgb, 0, 123, 255), 0.1);
-        }
-
-        .empty-state {
-            text-align: center;
-            color: var(--secondary-text-color);
-            padding: 30px;
-            font-size: 1.2em;
-            font-style: italic;
-        }
-
-        .error-message, .loading-message {
-            background-color: var(--error-bg);
-            color: var(--error-text);
-            padding: 25px;
-            border-radius: 15px;
-            margin-top: 25px;
-            text-align: center;
-            font-weight: 500;
-            border: 1px solid var(--error-text);
-            animation: fadeIn 0.5s ease-out;
-            font-size: 1.3em;
-            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.2);
-        }
-
-        .loading-message {
-            background-color: var(--card-background);
-            color: var(--secondary-text-color);
-            border-color: var(--border-color);
-            box-shadow: none;
-        }
-
-        /* Animasiyalar */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .current-weather, .forecast-item, .detail-item, .card {
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        /* Responsive Dizayn (Telefonlar üçün) */
-        @media (max-width: 767px) { /* Tablet və daha kiçik ekranlar */
-            .container {
-                grid-template-columns: 1fr; /* Hər şeyi tək sütuna yığ */
-                padding: 15px;
-                gap: 25px; /* Boşluqları tənzimlə */
-            }
-
-            header {
-                flex-direction: column;
-                padding: 15px;
-                border-bottom-left-radius: 0; /* Mobil görünüşdə radius olmasın */
-                border-bottom-right-radius: 0;
-            }
-
-            header h1 {
-                font-size: 2em; /* Mobil üçün kiçilt */
-                margin-bottom: 15px;
-            }
-
-            .theme-switch-wrapper {
-                margin-left: 0;
-                margin-top: 10px;
-            }
-
-            .search-section {
-                flex-direction: column;
-                width: 100%;
-                margin-top: 15px;
-                gap: 10px;
-                max-width: 100%; /* Tam eni istifadə etsin */
-            }
-
-            .search-section input, .search-section button {
-                width: 100%;
-                padding: 12px 15px;
-                font-size: 1em;
-            }
-
-            .card {
-                padding: 25px; /* Mobil üçün paddingi azaldın */
-                border-radius: 15px; /* Mobil üçün radiusu azaldın */
-                box-shadow: 0 5px 15px var(--shadow-medium); /* Mobil üçün kölgəni azaldın */
-            }
-
-            .weather-info h2, .forecast-section h2, .favorite-locations h2, .notification-settings h2 {
-                font-size: 1.8em; /* Mobil üçün başlığı kiçilt */
-                margin-bottom: 20px;
-                padding-bottom: 10px;
-            }
-
-            .current-weather .location-name {
-                font-size: 2.8em; /* Mobil üçün şəhər adını kiçilt */
-            }
-
-            .current-weather .local-time {
-                font-size: 1.1em;
-                margin-bottom: 15px;
-            }
-
-            .current-weather .temperature {
-                font-size: 5em; /* Mobil üçün temperaturu kiçilt */
-                gap: 10px;
-            }
-
-            .current-weather .description {
-                font-size: 1.6em; /* Mobil üçün açıqlamanı kiçilt */
-            }
-
-            .details {
-                flex-direction: row; /* Hələ də yan-yana */
-                flex-wrap: wrap; /* Sətirə sığmayanda aşağı düşsün */
-                gap: 15px; /* Mobil üçün aralığı azaldın */
-                margin-top: 25px;
-            }
-
-            .detail-item {
-                flex: 1 1 calc(50% - 15px); /* İki sütun üçün tənzimləyin */
-                min-width: unset; /* Minimum eni sıfırlayın */
-                padding: 15px; /* Mobil üçün paddingi azaldın */
-                font-size: 0.9em; /* Mobil üçün mətni kiçilt */
-            }
-            .detail-item span {
-                font-size: 1.4em; /* Mobil üçün dəyərləri kiçilt */
-            }
-
-
-            .add-favorite-btn {
-                width: 100%; /* Mobil üçün tam eni istifadə etsin */
-                padding: 12px 20px;
-                margin-top: 25px;
-                font-size: 1.1em;
-            }
-
-            .alerts {
-                padding: 20px;
-                margin-top: 25px;
-                font-size: 1.1em;
-            }
-            .alerts h3 {
-                font-size: 1.4em;
-            }
-            .alerts ul li {
-                font-size: 1em;
-            }
-
-            .forecast-grid {
-                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Daha kiçik ekranlar üçün 100px min en */
-                gap: 15px; /* Aralığı azaldın */
-                margin-top: 20px;
-            }
-            .forecast-item {
-                padding: 15px;
-            }
-            .forecast-item .icon {
-                font-size: 2.5em; /* Mobil üçün ikonu kiçilt */
-            }
-            .forecast-item .temp {
-                font-size: 1.5em; /* Mobil üçün temperaturu kiçilt */
-            }
-            .forecast-item .pop-text {
-                font-size: 0.85em; /* Mobil üçün yağış faizi mətn ölçüsü */
-            }
-
-            #map {
-                height: 300px; /* Mobil üçün xəritə hündürlüyünü azaldın */
-                border-radius: 15px;
-            }
-
-            .favorite-locations li {
-                font-size: 1.1em; /* Mobil üçün favorit mətnini kiçilt */
-                padding: 15px 0;
-            }
-            .favorite-locations button {
-                font-size: 0.9em;
-            }
-
-            .empty-state {
-                font-size: 1em;
-                padding: 20px;
-            }
-
-            .error-message, .loading-message {
-                padding: 20px;
-                font-size: 1.1em;
-            }
-        }
-
-        /* Daha kiçik telefon ekranları üçün əlavə optimizasiya (məsələn, iPhone 5/SE kimi) */
-        @media (max-width: 480px) {
-            header h1 {
-                font-size: 1.6em;
-            }
-            .current-weather .location-name {
-                font-size: 2.2em;
-            }
-            .current-weather .temperature {
-                font-size: 4em;
-            }
-            .current-weather .description {
-                font-size: 1.3em;
-            }
-            .detail-item {
-                flex: 1 1 100%; /* Kiçik ekranlarda hər elementi ayrı sütunda göstər */
-            }
-            .forecast-grid {
-                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Daha kiçik telefonlar üçün daha kiçik sütunlar */
-            }
-            .forecast-item .icon {
-                font-size: 2em;
-            }
-            .forecast-item .temp {
-                font-size: 1.3em;
-            }
-            .favorite-locations li {
-                font-size: 1em;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Futbol Statistikası</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Segoe UI',Tahoma,sans-serif;
+  background:linear-gradient(180deg,#020617,#0f172a);
+  color:#e5e7eb;
+}
+
+/* HEADER */
+header{
+  background:linear-gradient(90deg,#0f9d58,#065f46);
+  padding:18px 30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+nav a{
+  color:#ecfdf5;
+  text-decoration:none;
+  margin-left:20px;
+  font-weight:600;
+}
+
+/* MAIN */
+main{max-width:1200px;margin:auto;padding:30px 15px}
+
+/* SECTION */
+section{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  padding:22px;
+  margin-bottom:30px;
+}
+
+/* MATCH */
+.match{
+  background:#020617;
+  border:1px solid #134e4a;
+  border-radius:16px;
+  padding:16px;
+}
+
+.match-head{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:20px;
+}
+
+.club{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
+  font-weight:800;
+  
+}
+.club img{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  border:2px solid #10b981;
+}
+.score{
+  background:#10b981;
+  color:#022c22;
+  padding:6px 18px;
+  border-radius:12px;
+  font-weight:900;
+}
+
+/* GOALS */
+.goals-wrap{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  margin-top:15px;
+}
+.goals{
+  list-style:none;
+}
+.goals li{
+  background:#020617;
+  border-left:4px solid #10b981;
+  padding:6px 8px;
+  border-radius:8px;
+  margin-bottom:6px;
+  font-size:14px;
+}
+
+/* TABLE */
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+th{
+  background:#065f46;
+  padding:10px;
+}
+td{
+  background:#020617;
+  padding:8px;
+  text-align:center;
+  border-bottom:1px solid #134e4a;
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+.modal.active{display:flex}
+
+.modal-box{
+  background:#020617;
+  padding:25px;
+  border-radius:20px;
+  max-width:560px;
+  width:95%;
+  max-height:90vh;
+  overflow-y:auto;
+}
+
+.player{
+  display:flex;
+  gap:12px;
+  margin-top:12px;
+  background:#020617;
+  padding:10px;
+  border-radius:12px;
+}
+.player img{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+}
+
+/* SKILL BAR */
+.bar{
+  background:#0f172a;
+  height:6px;
+  border-radius:6px;
+  overflow:hidden;
+}
+.bar span{
+  display:block;
+  height:100%;
+  background:#10b981;
+}
+.xal{
+    display: flex;
+    flex-direction: column;
+}
+.club.left{
+  justify-self:end;
+}
+
+.club.right{
+  justify-self:start;
+}
+.left-goals{
+  justify-self:end;
+  margin-right: 70px;
+}
+
+.right-goals{
+  justify-self:start;
+  margin-left: 70px;
+}
+.goals{
+  max-width:240px;
+}
+
+
+
+
+.close{
+  margin-top:15px;
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:12px;
+  background:#10b981;
+  font-weight:800;
+}
+</style>
 </head>
+
 <body>
-    <header>
-        <h1>Hava Proqnozu</h1>
-        <div class="search-section">
-            <input type="text" id="cityInput" placeholder="Şəhər və ya ölkə adı daxil et">
-            <button id="searchButton">Axtar</button>
-        </div>
-        <div class="theme-switch-wrapper">
-            <label class="theme-switch" for="checkbox">
-                <input type="checkbox" id="checkbox" />
-                <div class="slider round"></div>
-            </label>
-        </div>
-    </header>
 
-    <div class="container">
-        <div class="main-content">
-            <div class="weather-info card" id="currentWeatherInfo">
-                <div class="loading-message">Hava məlumatları yüklənir...</div>
-            </div>
+<header>
+  <h1>⚽ DŞL PREMYER LİQASI</h1>
+  <nav>
+    <a href="#neticeler">Nəticələr</a>
+    <a href="#xal">Xal Cədvəli</a>
+    <a href="#bombardirler">Bombardirlər</a>
+  </nav>
+</header>
 
-            <div class="map-section card">
-                <h2>Xəritə</h2>
-                <div id="map"></div>
-            </div>
+<main>
 
-            <div class="forecast-section card" id="forecastSection">
-                <h2>Saatlıq Proqnoz</h2>
-                <div class="forecast-grid" id="hourlyForecastGrid">
-                    </div>
+<!-- NETICELER -->
+<section id="neticeler">
+<h2>📅 Oyun Nəticələri</h2>
 
-                <h2>Günlük Proqnoz</h2>
-                <div class="forecast-grid" id="dailyForecastGrid">
-                    </div>
-            </div>
-        </div>
 
-        <div class="sidebar">
-            <div class="favorite-locations card">
-                <h2>Favorit Yerlərim</h2>
-                <ul id="favoriteLocationsList">
-                    <li class="empty-state">Favorit yer yoxdur.</li>
-                </ul>
-            </div>
-            <div class="card notification-settings" style="margin-top: 25px;">
-                <h2>Bildiriş Ayarları</h2>
-                <p style="margin-bottom: 15px; font-size: 0.95em; color: var(--secondary-text-color);">
-                    Yağış ehtimalı 70%-dən yuxarı olduqda bildirişlər al. (Səhifə aktiv olduqda işləyir)
-                </p>
-                <button id="requestNotificationPermission" class="add-favorite-btn" style="width: 100%; margin-top: 0;">
-                    Bildiriş icazəsi ver
-                </button>
-            </div>
-        </div>
-    </div>
+<div class="match">
+  <div class="match-head">
+    <span class="club left" onclick="openClub('qarabag')">
 
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script>
-        // JavaScript Kodu
-        const WEATHERBIT_API_KEY = "04e6472d69c34a5db20a5cb08b8803d6"; // Weatherbit.io API açarınız
-        const WEATHERAPI_SEARCH_KEY = "4795709d109a43a783a150947250208"; // WeatherAPI.com-dan axtarış funksionallığı üçün API açarı
+      <img src="https://image2url.com/images/1766432365737-738e4179-9a9d-4e8c-b2ef-c2ffe521a0ad.png">
+      Boz Qurd FK
+    </span>
 
-        const translations = {
-            "no_internet_connection": "İnternet bağlantısı yoxdur: Zəhmət olmasa, bağlantınızı yoxlayın.",
-            "weather_update_success": "Hava məlumatları yeniləndi.",
-            "location_not_found": "Yer tapılmadı. Zəhmət olmasa, düzgün bir şəhər və ya ölkə adı daxil edin.",
-            "api_access_denied": "API girişi rədd edildi. Zəhmət olmasa, API açarınızı yoxlayın.",
-            "generic_error": "Xəta: Hava məlumatları hazırda əlçatan deyil. Zəhmət olmasa, yenidən cəhd edin.",
-            "enter_location_name": "Zəhmət olmasa, şəhər və ya ölkə adı daxil edin.",
-            "weather_alerts_title": "Hava Xəbərdarlıqları",
-            "no_alerts": "Aktiv hava xəbərdarlığı yoxdur.",
-            "add_to_favorites": "Favoritlərə əlavə et",
-            "remove_from_favorites": "Favoritlərdən çıxar",
-            "hourly_forecast_title": "Saatlıq Proqnoz",
-            "daily_forecast_title": "Günlük Proqnoz",
-            "humidity": "Rütubət",
-            "wind_speed": "Küləyin Sürəti",
-            "feels_like": "Hiss Olunan",
-            "pressure": "Təzyiq",
-            "visibility": "Görünürlük",
-            "uv_index": "UV İndeksi",
-            "sunrise": "Günəşin Çıxması",
-            "sunset": "Günəşin Batması",
-            "celsius": "Selsi",
-            "fahrenheit": "Farenheit",
-            "today": "Bugün",
-            "loading_weather_data": "Hava məlumatları yüklənir...",
-            "no_favorite_locations": "Favorit yer yoxdur.",
-            "local_time": "Yerli Vaxt",
-            "precipitation_probability": "Yağıntı Ehtimalı", // Yeni tərcümə
-            "notification_title": "Hava Bildirişi",
-            "rain_alert_message": "Yağış ehtimalı {pop}% təşkil edir. Çətir götürməyi unutmayın!",
-            "permission_granted": "İcazə verildi.",
-            "permission_denied": "İcazə rədd edildi.",
-            "permission_default": "İcazə tələb olunur."
-        };
+    <span class="score">12 : 8</span>
 
-        // Hava təsvirlərinin tərcümələri (Weatherbit API-nin `lang=az` dəstəyindən əlavə olaraq)
-        const weatherDescriptions = {
-            "Clear Sky": "Açıq Səma",
-            "Few clouds": "Az Buludlu",
-            "Scattered clouds": "Dağınıq Buludlar",
-            "Broken clouds": "Qırıq Buludlar",
-            "Overcast clouds": "Buludlu",
-            "Light drizzle": "Yüngül Çiskin",
-            "Drizzle": "Çiskin",
-            "Heavy drizzle": "Güclü Çiskin",
-            "Light rain": "Yüngül Yağış",
-            "Rain": "Yağış",
-            "Moderate rain": "Mötədil Yağış",
-            "Heavy rain": "Güclü Yağış",
-            "Extreme rain": "Həddindən artıq Yağış",
-            "Very heavy rain": "Çox Güclü Yağış",
-            "Light shower rain": "Yüngül Qısa Yağış",
-            "Shower rain": "Qısa Yağış",
-            "Heavy shower rain": "Güclü Qısa Yağış",
-            "Light thunderstorm": "Yüngül Tufan",
-            "Thunderstorm": "Tufan",
-            "Heavy thunderstorm": "Güclü Tufan",
-            "Ragged thunderstorm": "Nizamsız Tufan",
-            "Thunderstorm with light rain": "Yüngül Yağışla Tufan",
-            "Thunderstorm with rain": "Yağışla Tufan",
-            "Thunderstorm with heavy rain": "Güclü Yağışla Tufan",
-            "Light snow": "Yüngül Qar",
-            "Snow": "Qar",
-            "Heavy snow": "Güclü Qar",
-            "Sleet": "Qarışıq Yağış",
-            "Shower snow": "Qısa Qar",
-            "Light rain and snow": "Yüngül Yağış və Qar",
-            "Rain and snow": "Yağış və Qar",
-            "Light shower sleet": "Yüngül Qısa Buzlu Yağış",
-            "Shower sleet": "Qısa Buzlu Yağış",
-            "Freezing rain": "Donan Yağış",
-            "Mist": "Duman",
-            "Smoke": "Tüstü",
-            "Haze": "Çən",
-            "Sand/dust whirls": "Qum/Toz Burulğanları",
-            "Fog": "Duman",
-            "Freezing Fog": "Donan Duman",
-            "Squalls": "Külək",
-            "Tornado": "Qasırğa",
-            "Hail": "Dolu",
-            "Light pollution": "Yüngül Çirklənmə",
-            "Drizzle rain": "Çiskinli Yağış",
-            "Shower drizzle": "Qısa Çiskin",
-            "Heavy shower drizzle": "Güclü Qısa Çiskin",
-            "Light shower snow": "Yüngül Qısa Qar",
-            "Heavy shower snow": "Güclü Qısa Qar",
-            "Light fog": "Yüngül Duman",
-            "Patches of fog": "Duman Ləkələri",
-            "Shallow fog": "Sığ Duman",
-            "Partial Fog": "Qismən Duman",
-            "Mostly clear": "Əsasən Açıq",
-            "Partly cloudy": "Qismən Buludlu",
-            // Add more as needed from Weatherbit API responses
-        };
+    <span class="club right" onclick="openClub('neftci')">
 
-        const cityInput = document.getElementById('cityInput');
-        const searchButton = document.getElementById('searchButton');
-        const currentWeatherInfo = document.getElementById('currentWeatherInfo');
-        const hourlyForecastGrid = document.getElementById('hourlyForecastGrid');
-        const dailyForecastGrid = document.getElementById('dailyForecastGrid');
-        const favoriteLocationsList = document.getElementById('favoriteLocationsList');
-        const themeToggle = document.getElementById('checkbox');
-        const mapElement = document.getElementById('map');
-        const requestNotificationPermissionBtn = document.getElementById('requestNotificationPermission');
 
-        let map;
-        let currentMarker;
-        let notificationInterval; // Bildiriş yoxlama intervalı üçün dəyişən
+      <img src="https://image2url.com/images/1766432400665-15a484ab-480f-4891-9299-434732131dc8.png">
+      Nəfəs Çatmır FK
+    </span>
+    <h6></h6>
+  </div>
 
-        // Tema dəyişikliyi
-        themeToggle.addEventListener('change', () => {
-            document.documentElement.setAttribute('data-theme', themeToggle.checked ? 'dark' : 'light');
-            localStorage.setItem('theme', themeToggle.checked ? 'dark' : 'light');
-        });
+  <div class="goals-wrap">
+    <ul class="goals left-goals">
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            themeToggle.checked = savedTheme === 'dark';
+      <li>⚽ 23' Q.Murad</li>
+      <li>⚽ 54' T.Cavid</li>
+    </ul>
 
-            initMap();
-            loadFavoriteLocations();
-            fetchWeatherData("Bakı, Azərbaycan"); // Default olaraq Bakı
-            checkNotificationPermissionStatus(); // Bildiriş icazə statusunu yoxla
-        });
+    <ul class="goals right-goals">
 
-        // Bildiriş icazəsi üçün event listener
-        requestNotificationPermissionBtn.addEventListener('click', requestNotificationPermission);
+      <li>⚽ 77' İ.Süleyman</li>
+    </ul>
+  </div>
+</div>
+<h6>Azfar Arena 20.12.2025  13:00</h6>
+</section>
 
-        function checkNotificationPermissionStatus() {
-            if (!("Notification" in window)) {
-                requestNotificationPermissionBtn.textContent = "Bildirişlər dəstəklənmir";
-                requestNotificationPermissionBtn.disabled = true;
-                return;
-            }
-            if (Notification.permission === "granted") {
-                requestNotificationPermissionBtn.textContent = translations.permission_granted;
-                requestNotificationPermissionBtn.disabled = true;
-            } else if (Notification.permission === "denied") {
-                requestNotificationPermissionBtn.textContent = translations.permission_denied;
-                requestNotificationPermissionBtn.disabled = true;
-            } else {
-                requestNotificationPermissionBtn.textContent = translations.permission_default;
-                requestNotificationPermissionBtn.disabled = false;
-            }
-        }
+<!-- XAL CEDVELI -->
+<section id="xal">
+<h2>📊 Xal Cədvəli</h2>
+<h3>DŞL Premyer Liqası</h3>
+<table>
+<tr><th>#</th><th>Komanda</th><th>O</th><th>X</th><th>Q</th><th>Xal</th></tr>
+<tr><td>1</td><td>Boz Qurd FK</td><td>3</td><td>4</td><td>1</td><td>6</td></tr>
+<tr><td>2</td><td>Nəfəs Çatmır FK</td><td>3</td><td>3</td><td>2</td><td>3</td></tr>
+</table>
+</section>
 
-        async function requestNotificationPermission() {
-            if (!("Notification" in window)) {
-                alert("Bu brauzer bildirişləri dəstəkləmir.");
-                return;
-            }
+<!-- BOMBARDIRLER -->
+<section id="bombardirler">
+<h2>🥅 Bombardirlər</h2>
+<table>
+<tr><th>Oyunçu</th><th>Komanda</th><th>Qol</th></tr>
+<tr><td>Q.Murad</td><td>Boz Qurd FK</td><td>7</td></tr>
+<tr><td>İ.Süleyman</td><td>Nəfəs Çatmır FK</td><td>6</td></tr>
+<tr><td>T.Cavid</td><td>Boz Qurd FK</td><td>4</td></tr>
+<tr><td>O.Murad</td><td>Nəfəs Çatmır FK</td><td>2</td></tr>
+</table>
+</section>
 
-            const permission = await Notification.requestPermission();
-            checkNotificationPermissionStatus(); // İcazə statusunu yenilə
-            if (permission === "granted") {
-                console.log("Bildiriş icazəsi verildi.");
-            } else {
-                console.log("Bildiriş icazəsi rədd edildi.");
-            }
-        }
+</main>
 
-        // Yağış bildirişi göndərmək
-        function sendRainNotification(locationName, pop) {
-            if (Notification.permission === "granted") {
-                const message = translations.rain_alert_message.replace("{pop}", pop);
-                new Notification(`${translations.notification_title} - ${locationName}`, {
-                    body: message,
-                    icon: 'https://www.weatherbit.io/static/img/icons/r01d.png' // Yağış ikonu üçün nümunə
-                });
-            }
-        }
+<!-- MODAL -->
+<div class="modal" id="clubModal">
+  <div class="modal-box">
+    <h3 id="clubName"></h3>
+    <div id="players"></div>
+    <button class="close" onclick="closeModal()">Bağla</button>
+  </div>
+</div>
 
-        // Bildiriş yoxlama intervalını başlatmaq
-        function startNotificationCheckInterval(lat, lon, locationName) {
-            // Əgər əvvəlki interval mövcuddursa, onu təmizlə
-            if (notificationInterval) {
-                clearInterval(notificationInterval);
-            }
+<script>
+const clubs={
+  qarabag:{
+    name:"Boz Qurd FK",
+    players:[
+      {name:"Q.Murad",img:"https://image2url.com/images/1766432086132-15fe3d19-1299-4ec1-8a8d-173ab7f5f1ac.png",speed:85,shot:88,pass:80},
+      {name:"T.Cavid",img:"https://image2url.com/images/1766432017593-e3723b2c-32a5-41b2-a43d-f161883fa316.png",speed:90,shot:82,pass:78},
+      {name:"İ.Tuncay",img:"https://image2url.com/images/1766431896372-ef701eca-e3b4-4f71-bd62-032b3ec23319.png",speed:90,shot:82,pass:78},
+      {name:"M.Elxan",img:"https://image2url.com/images/1766431848472-32372bac-0466-48ae-bec4-0ef26e455020.png",speed:90,shot:82,pass:78},
+      {name:"B.Elvin",img:"https://image2url.com/images/1766431795561-1f80fe19-1c3b-444f-8917-f8beb2fb06bb.png",speed:90,shot:82,pass:78}
+    ]
+  },
+  neftci:{
+    name:"Nəfəs Çatmır FK",
+    players:[
+      {name:"İ.Süleyman [K]",img:"https://image2url.com/images/1766432719779-ff1f3de0-88ac-425d-a08f-681aad454bb4.png",speed:70,shot:85,pass:92},
+      {name:"Q.Fəqan",img:"https://image2url.com/images/1766432763350-52ed1f9e-78d0-4610-a075-a4b2cdfe10a8.png",speed:70,shot:85,pass:92},
+      {name:"Q.Ramil",img:"https://image2url.com/images/1766432803220-d3ec1a39-069c-4c38-9f79-e5d8e058c6d6.png",speed:70,shot:85,pass:92},
+      {name:"A.Dadaş",img:"https://image2url.com/images/1766432960997-4ae77e65-d186-4ab3-803c-40d09af91ede.png",speed:70,shot:85,pass:92},
+      {name:"Ş.Eltən",img:"https://image2url.com/images/1766433118568-3a6c44cd-e958-44f9-8aab-9974f039a2a1.png",speed:70,shot:85,pass:92},
+      {name:"O.Murad",img:"https://image2url.com/images/1766433246349-37c379f1-59b1-4b47-9948-ee7991baa587.png",speed:70,shot:85,pass:92}
+    ]
+  }
+};
 
-            // Hər 30 dəqiqədən bir yağış ehtimalını yoxla
-            notificationInterval = setInterval(async () => {
-                if (Notification.permission === "granted") {
-                    try {
-                        const currentResponse = await fetch(`https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${WEATHERBIT_API_KEY}&lang=az`);
-                        const currentData = await currentResponse.json();
-                        const dailyResponse = await fetch(`https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&key=${WEATHERBIT_API_KEY}&days=1&lang=az`); // Bugünkü məlumatı al
-                        const dailyData = await dailyResponse.json();
+function openClub(key){
+  clubName.textContent=clubs[key].name;
+  players.innerHTML="";
+  clubs[key].players.forEach(p=>{
+    players.innerHTML+=`
+    <div class="player">
+      <img src="${p.img}">
+      <div>
+        <b>${p.name}</b>
+        <div class="bar"><span style="width:${p.speed}%"></span></div>
+      </div>
+    </div>`;
+  });
+  clubModal.classList.add("active");
+}
+function closeModal(){clubModal.classList.remove("active");}
+</script>
 
-                        if (currentData.data && currentData.data.length > 0 && dailyData.data && dailyData.data.length > 0) {
-                            const todayForecast = dailyData.data[0];
-                            const pop = todayForecast.pop; // Yağıntı ehtimalı
-                            console.log(`[Bildiriş Yoxlaması] ${locationName}: Yağıntı ehtimalı - ${pop}%`);
-
-                            if (pop >= 70) {
-                                sendRainNotification(locationName, pop);
-                            }
-                        }
-                    } catch (error) {
-                        console.error("Bildiriş yoxlaması zamanı xəta:", error);
-                    }
-                }
-            }, 30 * 60 * 1000); // 30 dəqiqə
-        }
-
-        function initMap() {
-            if (map) {
-                map.remove();
-            }
-            map = L.map('map').setView([40.377, 49.892], 9);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-
-            map.on('click', onMapClick);
-        }
-
-        async function onMapClick(e) {
-            const lat = e.latlng.lat;
-            const lon = e.latlng.lng;
-            displayLoading();
-            await fetchWeatherDataByCoordinates(lat, lon);
-        }
-
-        function updateMapMarker(lat, lon, cityName = "") {
-            if (currentMarker) {
-                map.removeLayer(currentMarker);
-            }
-            currentMarker = L.marker([lat, lon]).addTo(map)
-                .bindPopup(cityName || `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`).openPopup();
-            map.setView([lat, lon], 9);
-        }
-
-        searchButton.addEventListener('click', () => {
-            const location = cityInput.value.trim();
-            if (location) {
-                displayLoading();
-                fetchWeatherData(location);
-            } else {
-                displayError(translations.enter_location_name);
-            }
-        });
-
-        async function fetchWeatherData(location) {
-            try {
-                const searchResponse = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=${WEATHERAPI_SEARCH_KEY}&q=${location}&days=7&aqi=no&alerts=yes`);
-                if (!searchResponse.ok) {
-                    if (searchResponse.status === 403) {
-                        throw new Error(translations.api_access_denied);
-                    } else if (searchResponse.status === 400) {
-                        throw new Error(translations.location_not_found);
-                    }
-                    throw new Error(translations.generic_error);
-                }
-                const searchData = await searchResponse.json();
-
-                if (!searchData || !searchData.location) {
-                    throw new Error(translations.location_not_found);
-                }
-
-                const { lat, lon } = searchData.location;
-                await fetchWeatherDataByCoordinates(lat, lon, searchData.location.name, searchData.location.country);
-
-            } catch (error) {
-                console.error("Hava məlumatı gətirilərkən xəta baş verdi:", error);
-                displayError(error.message);
-            }
-        }
-
-        async function fetchWeatherDataByCoordinates(lat, lon, locationName = null, countryName = null) {
-            try {
-                // `lang=az` parametri bütün çağırışlara əlavə edildi
-                const currentResponse = await fetch(`https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${WEATHERBIT_API_KEY}&lang=az`);
-                const hourlyResponse = await fetch(`https://api.weatherbit.io/v2.0/forecast/hourly?lat=${lat}&lon=${lon}&key=${WEATHERBIT_API_KEY}&hours=24&lang=az`);
-                const dailyResponse = await fetch(`https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&key=${WEATHERBIT_API_KEY}&days=7&lang=az`);
-                const alertsResponse = await fetch(`https://api.weatherbit.io/v2.0/alerts?lat=${lat}&lon=${lon}&key=${WEATHERBIT_API_KEY}&lang=az`);
-
-                if (!currentResponse.ok || !hourlyResponse.ok || !dailyResponse.ok || !alertsResponse.ok) {
-                    if (!navigator.onLine) {
-                        throw new Error(translations.no_internet_connection);
-                    }
-                    if (currentResponse.status === 403 || hourlyResponse.status === 403 || dailyResponse.status === 403 || alertsResponse.status === 403) {
-                        throw new Error(translations.api_access_denied);
-                    }
-                    throw new Error(translations.generic_error);
-                }
-
-                const currentData = await currentResponse.json();
-                const hourlyData = await hourlyResponse.json();
-                const dailyData = await dailyResponse.json();
-                const alertsData = await alertsResponse.json();
-
-                // Bildiriş intervalını yeni koordinatlar və yer adı ilə başlat
-                startNotificationCheckInterval(lat, lon, locationName || currentData.data[0].city_name);
-
-                displayCurrentWeather(currentData.data[0], locationName, countryName, dailyData.data[0].pop); // Yağıntı faizini ötür
-                displayHourlyForecast(hourlyData.data);
-                displayDailyForecast(dailyData.data);
-                displayWeatherAlerts(alertsData.alerts);
-                updateMapMarker(lat, lon, locationName || currentData.data[0].city_name);
-
-            } catch (error) {
-                console.error("Hava məlumatı gətirilərkən xəta baş verdi:", error);
-                displayError(error.message);
-            }
-        }
-
-        function displayLoading() {
-            currentWeatherInfo.innerHTML = `<div class="loading-message">${translations.loading_weather_data}</div>`;
-            hourlyForecastGrid.innerHTML = '';
-            dailyForecastGrid.innerHTML = '';
-            document.getElementById('forecastSection').style.display = 'block';
-        }
-
-        function displayError(message) {
-            currentWeatherInfo.innerHTML = `<div class="error-message">${message}</div>`;
-            hourlyForecastGrid.innerHTML = '';
-            dailyForecastGrid.innerHTML = '';
-            document.getElementById('forecastSection').style.display = 'none';
-        }
-
-        function displayCurrentWeather(data, locationName, countryName, pop) { // pop parametri əlavə edildi
-            const { temp, app_temp, rh, wind_spd, pres, vis, uv, sunrise, sunset, city_name, country_code, timezone, weather } = data;
-            const fullLocationName = locationName && countryName ? `${locationName}, ${countryName}` : `${city_name}, ${country_code}`;
-            const localTime = new Date().toLocaleTimeString('az-AZ', { timeZone: timezone, hour: '2-digit', minute: '2-digit' });
-
-            const weatherIconClass = getWeatherIcon(weather.icon);
-            // API-dən Azərbaycanca gəlməsə, custom tərcümədən istifadə et
-            const translatedDescription = weatherDescriptions[weather.description] || weather.description;
-
-            currentWeatherInfo.innerHTML = `
-                <div class="current-weather">
-                    <h2 class="location-name">${fullLocationName}</h2>
-                    <p class="local-time"><i class="wi wi-time-2"></i> ${translations.local_time}: ${localTime}</p>
-                    <div class="temperature">
-                        <i class="wi ${weatherIconClass}"></i>
-                        ${temp.toFixed(0)}°C
-                    </div>
-                    <p class="description">${translatedDescription}</p>
-                    <div class="details">
-                        <div class="detail-item">
-                            <p>${translations.feels_like}</p>
-                            <span>${app_temp.toFixed(0)}°C</span>
-                        </div>
-                        <div class="detail-item">
-                            <p>${translations.humidity}</p>
-                            <span>${rh}%</span>
-                        </div>
-                        <div class="detail-item">
-                            <p>${translations.wind_speed}</p>
-                            <span>${(wind_spd * 3.6).toFixed(1)} km/s</span>
-                        </div>
-                        
-                        <div class="detail-item">
-                            <p>${translations.precipitation_probability}</p> <span>${pop}%</span>
-                        </div>
-                        <div class="detail-item">
-                            <p>${translations.pressure}</p>
-                            <span>${pres.toFixed(0)} mb</span>
-                        </div>
-                        <div class="detail-item">
-                            <p>${translations.visibility}</p>
-                            <span>${vis.toFixed(1)} km</span>
-                        </div>
-                        <div class="detail-item">
-                            <p>${translations.uv_index}</p>
-                            <span>${uv.toFixed(1)}</span>
-                        </div>
-                        <div class="detail-item">
-                            <p>${translations.sunrise}</p>
-                            <span>${sunrise}</span>
-                        </div>
-                        <div class="detail-item">
-                            <p>${translations.sunset}</p>
-                            <span>${sunset}</span>
-                        </div>
-                    </div>
-                    <button class="add-favorite-btn" data-location="${fullLocationName}" data-lat="${data.lat}" data-lon="${data.lon}">
-                        ${isFavorite(fullLocationName) ? translations.remove_from_favorites : translations.add_to_favorites}
-                    </button>
-                </div>
-            `;
-            document.getElementById('forecastSection').style.display = 'block';
-            document.querySelector('.add-favorite-btn').addEventListener('click', toggleFavorite);
-        }
-
-        function displayHourlyForecast(hourlyData) {
-            hourlyForecastGrid.innerHTML = `<h2>${translations.hourly_forecast_title}</h2>`;
-            hourlyData.slice(0, 12).forEach(hour => {
-                const forecastTime = new Date(hour.ts * 1000);
-                const timeString = forecastTime.getHours() + ':00';
-                const weatherIconClass = getWeatherIcon(hour.weather.icon);
-                const translatedDescription = weatherDescriptions[hour.weather.description] || hour.weather.description;
-
-                hourlyForecastGrid.innerHTML += `
-                    <div class="forecast-item">
-                        <p>${timeString}</p>
-                        <i class="icon wi ${weatherIconClass}" title="${translatedDescription}"></i>
-                        <p class="temp">${hour.temp.toFixed(0)}°C</p>
-                    </div>
-                `;
-            });
-        }
-
-        function displayDailyForecast(dailyData) {
-            dailyForecastGrid.innerHTML = `<h2>${translations.daily_forecast_title}</h2>`;
-            dailyData.slice(0, 7).forEach((day, index) => {
-                const date = new Date(day.ts * 1000);
-                const dayName = index === 0 ? translations.today : date.toLocaleDateString('az-AZ', { weekday: 'long' });
-                const weatherIconClass = getWeatherIcon(day.weather.icon);
-                const translatedDescription = weatherDescriptions[day.weather.description] || day.weather.description;
-
-                dailyForecastGrid.innerHTML += `
-                    <div class="forecast-item">
-                        <p>${dayName}</p>
-                        <i class="icon wi ${weatherIconClass}" title="${translatedDescription}"></i>
-                        <p class="temp">${day.max_temp.toFixed(0)}° / ${day.min_temp.toFixed(0)}°</p>
-                        <p class="pop-text">${translations.precipitation_probability}: ${day.pop}%</p> </div>
-                `;
-            });
-        }
-
-        function displayWeatherAlerts(alerts) {
-            const alertsHtml = document.createElement('div');
-            alertsHtml.classList.add('alerts');
-
-            if (alerts && alerts.length > 0) {
-                alertsHtml.classList.remove('no-alerts');
-                let alertMessages = `<h3>${translations.weather_alerts_title}</h3><ul>`;
-                alerts.forEach(alert => {
-                    // API-dən gələn başlığı və təsviri olduğu kimi istifadə edirik, çünki `lang=az` istəyi göndəririk.
-                    // Əgər yenə də ingiliscə gələrsə, əlavə tərcümə mapping tələb oluna bilər.
-                    alertMessages += `<li><strong>${alert.title}:</strong> ${alert.description}</li>`;
-                });
-                alertMessages += `</ul>`;
-                alertsHtml.innerHTML = alertMessages;
-            } else {
-                alertsHtml.classList.add('no-alerts');
-                alertsHtml.innerHTML = `<p>${translations.no_alerts}</p>`;
-            }
-            const existingAlerts = currentWeatherInfo.querySelector('.alerts');
-            if (existingAlerts) {
-                existingAlerts.remove();
-            }
-            currentWeatherInfo.appendChild(alertsHtml);
-        }
-
-        function getWeatherIcon(iconCode) {
-            const iconMap = {
-                "t01d": "wi-thunderstorm", "t01n": "wi-thunderstorm",
-                "t02d": "wi-storm-showers", "t02n": "wi-storm-showers",
-                "t03d": "wi-storm", "t03n": "wi-storm",
-                "t04d": "wi-lightning", "t04n": "wi-lightning",
-                "t05d": "wi-thunderstorm", "t05n": "wi-thunderstorm",
-                "d01d": "wi-sprinkle", "d01n": "wi-sprinkle",
-                "d02d": "wi-day-sprinkle", "d02n": "wi-night-alt-sprinkle",
-                "d03d": "wi-sprinkle", "d03n": "wi-sprinkle",
-                "r01d": "wi-rain", "r01n": "wi-rain",
-                "r02d": "wi-day-showers", "r02n": "wi-night-alt-showers",
-                "r03d": "wi-rain", "r03n": "wi-rain",
-                "r04d": "wi-rain-mix", "r04n": "wi-rain-mix",
-                "r05d": "wi-showers", "r05n": "wi-showers",
-                "r06d": "wi-rain", "r06n": "wi-rain",
-                "s01d": "wi-snow", "s01n": "wi-snow",
-                "s02d": "wi-snow", "s02n": "wi-snow",
-                "s03d": "wi-snow", "s03n": "wi-snow",
-                "s04d": "wi-sleet", "s04n": "wi-sleet",
-                "s05d": "wi-snow", "s05n": "wi-snow",
-                "s06d": "wi-snow", "s06n": "wi-snow",
-                "a01d": "wi-cloudy-gusts", "a01n": "wi-cloudy-gusts",
-                "a02d": "wi-fog", "a02n": "wi-fog",
-                "a03d": "wi-fog", "a03n": "wi-fog",
-                "a04d": "wi-fog", "a04n": "wi-fog",
-                "a05d": "wi-smog", "a05n": "wi-smog",
-                "a06d": "wi-dust", "a06n": "wi-dust",
-                "f01d": "wi-cloudy", "f01n": "wi-cloudy",
-                "c01d": "wi-day-sunny", "c01n": "wi-night-clear",
-                "c02d": "wi-day-cloudy", "c02n": "wi-night-alt-cloudy",
-                "c03d": "wi-cloudy", "c03n": "wi-cloudy",
-                "c04d": "wi-cloudy", "c04n": "wi-cloudy",
-                "u00d": "wi-na", "u00n": "wi-na"
-            };
-            return iconMap[iconCode] || "wi-na";
-        }
-
-        function loadFavoriteLocations() {
-            const favorites = JSON.parse(localStorage.getItem('favoriteLocations')) || [];
-            favoriteLocationsList.innerHTML = '';
-
-            if (favorites.length === 0) {
-                favoriteLocationsList.innerHTML = `<li class="empty-state">${translations.no_favorite_locations}</li>`;
-                return;
-            }
-
-            favorites.forEach(loc => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <span>${loc.name}</span>
-                    <button data-location="${loc.name}" data-lat="${loc.lat}" data-lon="${loc.lon}">
-                        ${translations.remove_from_favorites}
-                    </button>
-                `;
-                li.querySelector('span').addEventListener('click', () => {
-                    displayLoading();
-                    const parts = loc.name.split(', ');
-                    const country = parts.length > 1 ? parts[parts.length - 1] : null;
-                    fetchWeatherDataByCoordinates(loc.lat, loc.lon, parts[0], country);
-                });
-                li.querySelector('button').addEventListener('click', toggleFavorite);
-                favoriteLocationsList.appendChild(li);
-            });
-        }
-
-        function toggleFavorite(event) {
-            const button = event.target;
-            const locationName = button.dataset.location;
-            const lat = button.dataset.lat;
-            const lon = button.dataset.lon;
-
-            let favorites = JSON.parse(localStorage.getItem('favoriteLocations')) || [];
-            const index = favorites.findIndex(loc => loc.name === locationName);
-
-            if (index > -1) {
-                // Favoritlərdən sil
-                favorites.splice(index, 1);
-                button.textContent = translations.add_to_favorites;
-            } else {
-                // Favoritlərə əlavə et
-                favorites.push({ name: locationName, lat, lon });
-                button.textContent = translations.remove_from_favorites;
-            }
-
-            localStorage.setItem('favoriteLocations', JSON.stringify(favorites));
-            loadFavoriteLocations();
-        }
-
-        function isFavorite(locationName) {
-            const favorites = JSON.parse(localStorage.getItem('favoriteLocations')) || [];
-            return favorites.some(loc => loc.name === locationName);
-        }
-    </script>
 </body>
 </html>
