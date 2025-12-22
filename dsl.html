@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<title>Futbol Statistikası</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Segoe UI',Tahoma,sans-serif;
+  background:linear-gradient(180deg,#020617,#0f172a);
+  color:#e5e7eb;
+}
+
+/* HEADER */
+header{
+  background:linear-gradient(90deg,#0f9d58,#065f46);
+  padding:18px 30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+nav a{
+  color:#ecfdf5;
+  text-decoration:none;
+  margin-left:20px;
+  font-weight:600;
+}
+
+/* MAIN */
+main{max-width:1200px;margin:auto;padding:30px 15px}
+
+/* SECTION */
+section{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  padding:22px;
+  margin-bottom:30px;
+}
+
+/* MATCH */
+.match{
+  background:#020617;
+  border:1px solid #134e4a;
+  border-radius:16px;
+  padding:16px;
+}
+
+.match-head{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:20px;
+}
+
+.club{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
+  font-weight:800;
+  
+}
+.club img{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  border:2px solid #10b981;
+}
+.score{
+  background:#10b981;
+  color:#022c22;
+  padding:6px 18px;
+  border-radius:12px;
+  font-weight:900;
+}
+
+/* GOALS */
+.goals-wrap{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  margin-top:15px;
+}
+.goals{
+  list-style:none;
+}
+.goals li{
+  background:#020617;
+  border-left:4px solid #10b981;
+  padding:6px 8px;
+  border-radius:8px;
+  margin-bottom:6px;
+  font-size:14px;
+}
+
+/* TABLE */
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+th{
+  background:#065f46;
+  padding:10px;
+}
+td{
+  background:#020617;
+  padding:8px;
+  text-align:center;
+  border-bottom:1px solid #134e4a;
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+.modal.active{display:flex}
+
+.modal-box{
+  background:#020617;
+  padding:25px;
+  border-radius:20px;
+  max-width:560px;
+  width:95%;
+  max-height:90vh;
+  overflow-y:auto;
+}
+
+.player{
+  display:flex;
+  gap:12px;
+  margin-top:12px;
+  background:#020617;
+  padding:10px;
+  border-radius:12px;
+}
+.player img{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+}
+
+/* SKILL BAR */
+.bar{
+  background:#0f172a;
+  height:6px;
+  border-radius:6px;
+  overflow:hidden;
+}
+.bar span{
+  display:block;
+  height:100%;
+  background:#10b981;
+}
+.xal{
+    display: flex;
+    flex-direction: column;
+}
+.club.left{
+  justify-self:end;
+}
+
+.club.right{
+  justify-self:start;
+}
+.left-goals{
+  justify-self:end;
+  margin-right: 70px;
+}
+
+.right-goals{
+  justify-self:start;
+  margin-left: 70px;
+}
+.goals{
+  max-width:240px;
+}
+
+
+
+
+.close{
+  margin-top:15px;
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:12px;
+  background:#10b981;
+  font-weight:800;
+}
+/* 📱 MOBİL UYĞUNLAŞDIRMA */
+@media (max-width: 600px){
+
+  header{
+    flex-direction:column;
+    gap:10px;
+    text-align:center;
+  }
+
+  nav a{
+    margin:0 10px;
+  }
+
+  /* MATCH HEAD */
+  .match-head{
+    grid-template-columns:1fr;
+    gap:12px;
+    text-align:center;
+  }
+
+  .club.left,
+  .club.right{
+    justify-self:center;
+  }
+
+  .club{
+    justify-content:center;
+  }
+
+  .score{
+    margin:6px auto;
+  }
+
+  /* GOALS */
+  .goals-wrap{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+
+  .left-goals,
+  .right-goals{
+    justify-self:center;
+    margin:0;
+  }
+
+  .goals{
+    max-width:100%;
+  }
+
+  /* TABLE */
+  table{
+    font-size:13px;
+  }
+
+  th,td{
+    padding:6px;
+  }
+
+  /* MODAL */
+  .modal-box{
+    padding:18px;
+  }
+
+  .player{
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+
+  .player img{
+    width:70px;
+    height:70px;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>⚽ DŞL PREMYER LİQASI</h1>
+  <nav>
+    <a href="#neticeler">Nəticələr</a>
+    <a href="#xal">Xal Cədvəli</a>
+    <a href="#bombardirler">Bombardirlər</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- NETICELER -->
+<section id="neticeler">
+<h2>📅 Oyun Nəticələri</h2>
+
+
+<div class="match">
+  <div class="match-head">
+    <span class="club left" onclick="openClub('qarabag')">
+
+      <img src="https://image2url.com/images/1766432365737-738e4179-9a9d-4e8c-b2ef-c2ffe521a0ad.png">
+      Boz Qurd FK
+    </span>
+
+    <span class="score">12 : 8</span>
+
+    <span class="club right" onclick="openClub('neftci')">
+
+
+      <img src="https://image2url.com/images/1766432400665-15a484ab-480f-4891-9299-434732131dc8.png">
+      Nəfəs Çatmır FK
+    </span>
+    <h6></h6>
+  </div>
+
+  <div class="goals-wrap">
+    <ul class="goals left-goals">
+
+      <li>⚽ 23' Q.Murad</li>
+      <li>⚽ 54' T.Cavid</li>
+    </ul>
+
+    <ul class="goals right-goals">
+
+      <li>⚽ 77' İ.Süleyman</li>
+    </ul>
+  </div>
+</div>
+<h6>Azfar Arena 20.12.2025  13:00</h6>
+</section>
+
+<!-- XAL CEDVELI -->
+<section id="xal">
+<h2>📊 Xal Cədvəli</h2>
+<h3>DŞL Premyer Liqası</h3>
+<table>
+<tr><th>#</th><th>Komanda</th><th>O</th><th>X</th><th>Q</th><th>Xal</th></tr>
+<tr><td>1</td><td>Boz Qurd FK</td><td>3</td><td>4</td><td>1</td><td>6</td></tr>
+<tr><td>2</td><td>Nəfəs Çatmır FK</td><td>3</td><td>3</td><td>2</td><td>3</td></tr>
+</table>
+</section>
+
+<!-- BOMBARDIRLER -->
+<section id="bombardirler">
+<h2>🥅 Bombardirlər</h2>
+<table>
+<tr><th>Oyunçu</th><th>Komanda</th><th>Qol</th></tr>
+<tr><td>Q.Murad</td><td>Boz Qurd FK</td><td>7</td></tr>
+<tr><td>İ.Süleyman</td><td>Nəfəs Çatmır FK</td><td>6</td></tr>
+<tr><td>T.Cavid</td><td>Boz Qurd FK</td><td>4</td></tr>
+<tr><td>O.Murad</td><td>Nəfəs Çatmır FK</td><td>2</td></tr>
+</table>
+</section>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal" id="clubModal">
+  <div class="modal-box">
+    <h3 id="clubName"></h3>
+    <div id="players"></div>
+    <button class="close" onclick="closeModal()">Bağla</button>
+  </div>
+</div>
+
+<script>
+const clubs={
+  qarabag:{
+    name:"Boz Qurd FK",
+    players:[
+      {name:"Q.Murad",img:"https://image2url.com/images/1766432086132-15fe3d19-1299-4ec1-8a8d-173ab7f5f1ac.png",speed:85,shot:88,pass:80},
+      {name:"T.Cavid",img:"https://image2url.com/images/1766432017593-e3723b2c-32a5-41b2-a43d-f161883fa316.png",speed:90,shot:82,pass:78},
+      {name:"İ.Tuncay",img:"https://image2url.com/images/1766431896372-ef701eca-e3b4-4f71-bd62-032b3ec23319.png",speed:90,shot:82,pass:78},
+      {name:"M.Elxan",img:"https://image2url.com/images/1766431848472-32372bac-0466-48ae-bec4-0ef26e455020.png",speed:90,shot:82,pass:78},
+      {name:"B.Elvin",img:"https://image2url.com/images/1766431795561-1f80fe19-1c3b-444f-8917-f8beb2fb06bb.png",speed:90,shot:82,pass:78}
+    ]
+  },
+  neftci:{
+    name:"Nəfəs Çatmır FK",
+    players:[
+      {name:"İ.Süleyman [K]",img:"https://image2url.com/images/1766432719779-ff1f3de0-88ac-425d-a08f-681aad454bb4.png",speed:70,shot:85,pass:92},
+      {name:"Q.Fəqan",img:"https://image2url.com/images/1766432763350-52ed1f9e-78d0-4610-a075-a4b2cdfe10a8.png",speed:70,shot:85,pass:92},
+      {name:"Q.Ramil",img:"https://image2url.com/images/1766432803220-d3ec1a39-069c-4c38-9f79-e5d8e058c6d6.png",speed:70,shot:85,pass:92},
+      {name:"A.Dadaş",img:"https://image2url.com/images/1766432960997-4ae77e65-d186-4ab3-803c-40d09af91ede.png",speed:70,shot:85,pass:92},
+      {name:"Ş.Eltən",img:"https://image2url.com/images/1766433118568-3a6c44cd-e958-44f9-8aab-9974f039a2a1.png",speed:70,shot:85,pass:92},
+      {name:"O.Murad",img:"https://image2url.com/images/1766433246349-37c379f1-59b1-4b47-9948-ee7991baa587.png",speed:70,shot:85,pass:92}
+    ]
+  }
+};
+
+function openClub(key){
+  clubName.textContent=clubs[key].name;
+  players.innerHTML="";
+  clubs[key].players.forEach(p=>{
+    players.innerHTML+=`
+    <div class="player">
+      <img src="${p.img}">
+      <div>
+        <b>${p.name}</b>
+        <div class="bar"><span style="width:${p.speed}%"></span></div>
+      </div>
+    </div>`;
+  });
+  clubModal.classList.add("active");
+}
+function closeModal(){clubModal.classList.remove("active");}
+</script>
+
+</body>
+</html>
