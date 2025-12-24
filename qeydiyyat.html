@@ -101,40 +101,42 @@ h2{
   </style>
 
   <!-- Firebase CDN -->
-  <script type="module">
+ <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider } 
     from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
-   const firebaseConfig = {
-  apiKey: "AIzaSyAjhmCJIZaLB3UmnOwm1NUqbIgvlmfQW2o",
-  authDomain: "typingmaster-185d7.firebaseapp.com",
-  projectId: "typingmaster-185d7",
-  storageBucket: "typingmaster-185d7.firebasestorage.app",
-  messagingSenderId: "1035769402672",
-  appId: "1:1035769402672:web:1e539808df0b40777a24f5"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyAjhmCJIZaLB3UmnOwm1NUqbIgvlmfQW2o",
+      authDomain: "typingmaster-185d7.firebaseapp.com",
+      projectId: "typingmaster-185d7",
+      storageBucket: "typingmaster-185d7.firebasestorage.app",
+      messagingSenderId: "1035769402672",
+      appId: "1:1035769402672:web:1e539808df0b40777a24f5"
+    };
 
-    // Firebase işə düşür
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    // Login funksiyası
     window.googleLogin = function () {
       signInWithPopup(auth, provider)
         .then((result) => {
-          const user = result.user;
-         
+          const email = result.user.email;
+          let users = JSON.parse(localStorage.getItem("users")) || {};
 
-          alert("Giriş uğurlu! " + user.email);
-          window.location.href = "https://typingmasteraz.github.io/ayda/salam.html";
-          console.log(user);
+          if (users[email]) {
+            window.location.href = "daxil ol.html";
+            return;
+          }
+
+          users[email] = { provider: "google" };
+          localStorage.setItem("users", JSON.stringify(users));
+          localStorage.setItem("loggedInUser", email);
+
+          window.location.href = "salam.html";
         })
-        .catch((error) => {
-          alert("Xəta oldu: " + error.message);
-          console.error(error);
-        });
+        .catch(() => alert("Xəta oldu!"));
     };
   </script>
 </head>
@@ -146,11 +148,7 @@ h2{
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
     Google ilə Qeydiyyat
   </button>
-  <button class="salam" onclick="window.location.href='https://typingmasteraz.github.io/ayda/daxil%20ol.html'">
-     <img src="https://camo.githubusercontent.com/9e521c86648daf3b6e1147eb7c337007ecafad5111e878e18d96fe5e67ef2023/68747470733a2f2f6c6f676f732d776f726c642e6e65742f77702d636f6e74656e742f75706c6f6164732f323032302f31312f476d61696c2d4c6f676f2e706e67">
-    Emaillə Qeydiyyat
-    
-  </button>
+  
 
 </div>
 <div class="picture">
