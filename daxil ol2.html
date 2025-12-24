@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,56 +94,90 @@ h3{
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
+/* ===============================
+   EMAILJS SETTINGS
+================================ */
 emailjs.init("xEfr4FxWCyZag9EgB");
 const serviceID = "service_4jeponl";
 const templateID = "template_03qfkuv";
 
+/* ===============================
+   VARIABLES
+================================ */
 let generatedCode = "";
+let otpExpireTime = 0;
 
-document.getElementById("sendCodeBtn").addEventListener("click", function() {
+/* ===============================
+   SEND OTP
+================================ */
+document.getElementById("sendCodeBtn").addEventListener("click", function () {
     const email = document.getElementById("emailInput").value.trim();
+
     if (!email) {
         alert("Email daxil edin!");
         return;
     }
 
     let users = JSON.parse(localStorage.getItem("users")) || {};
+
+    // Qeydiyyat yoxdursa → OTP GÖNDƏRİLMƏSİN
     if (!users[email]) {
-        alert("Bu email qeydiyyatda deyil! Qeydiyyatdan keçin!");
+        alert("Bu email qeydiyyatda deyil!");
         window.location.href = "qeydiyyat.html";
         return;
     }
 
-    document.querySelector("h1").style.display = "none";
-
+    // OTP yarat
     generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // ⏱️ 15 dəqiqə vaxt limiti
+    otpExpireTime = Date.now() + 15 * 60 * 1000;
 
     emailjs.send(serviceID, templateID, {
         email: email,
         passcode: generatedCode,
-        time: "15 dəq"
+        time: "15 dəqiqə"
     })
     .then(() => {
         document.getElementById("emailSection").style.display = "none";
         document.getElementById("otpMessage").style.display = "block";
         document.getElementById("codeSection").style.display = "block";
     })
-    .catch(err => {
-        alert("Email göndərilə bilmədi!");
-        console.log(err);
+    .catch((error) => {
+        alert("OTP göndərilə bilmədi!");
+        console.error(error);
     });
 });
 
-document.getElementById("verifyBtn").addEventListener("click", function() {
-    const entered = document.getElementById("codeInput").value.trim();
-    if (entered === generatedCode) {
-        alert("Doğrulama uğurla tamamlandı!");
-        window.location.href="https://typingmasteraz.github.io/salam./salam.html";
+/* ===============================
+   VERIFY OTP
+================================ */
+document.getElementById("verifyBtn").addEventListener("click", function () {
+    const enteredCode = document.getElementById("codeInput").value.trim();
+    const email = document.getElementById("emailInput").value.trim();
+
+    if (!enteredCode) {
+        alert("OTP kodu daxil edin!");
+        return;
+    }
+
+    // Vaxt bitibsə
+    if (Date.now() > otpExpireTime) {
+        alert("OTP vaxtı bitdi!");
+        return;
+    }
+
+    if (enteredCode === generatedCode) {
+        // LOGIN SESSION
+        localStorage.setItem("loggedInUser", email);
+        window.location.href = "salam.html";
     } else {
         alert("Kod səhvdir!");
     }
 });
 </script>
 
+
 </body>
 </html>
+
