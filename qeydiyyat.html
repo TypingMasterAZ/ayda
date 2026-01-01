@@ -135,6 +135,34 @@ h4{
     const provider = new GoogleAuthProvider();
 
     window.googleLogin = function () {
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      const email = result.user.email;
+      let users = JSON.parse(localStorage.getItem("users")) || {};
+
+      // ❌ ƏGƏR EMAIL ARTIQ QEYDİYYATDADIRSA
+      if (users[email]) {
+        alert("Bu email artıq qeydiyyatdan keçib! Zəhmət olmasa daxil olun.");
+        window.location.href = "daxil ol2.html"; // login səhifəsi
+        return;
+      }
+
+      // ✅ YENİ QEYDİYYAT
+      users[email] = {
+        provider: "google",
+        registeredAt: new Date().toISOString()
+      };
+
+      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("loggedInUser", email);
+
+      alert("Qeydiyyat uğurla tamamlandı!");
+      window.location.href = "salam.html";
+    })
+    .catch(() => alert("Xəta oldu!"));
+};  men bunu hara yazim
+
+    window.googleLogin = function () {
       signInWithPopup(auth, provider)
         .then((result) => {
           const email = result.user.email;
