@@ -181,45 +181,6 @@ let otpExpireTime = null;
 let timerInterval = null;
 let userEmail = "";
 
-document.getElementById("sendCodeBtn").addEventListener("click", function () {
-  const email = document.getElementById("emailInput").value.trim();
-
-  if (!email) {
-    alert("Email daxil edin!");
-    return;
-  }
-
-  let users = JSON.parse(localStorage.getItem("users")) || {};
-
-  // ❌ QEYDİYYATDAN KEÇMƏYƏN EMAIL
-  if (!users[email]) {
-    alert("Bu email qeydiyyatdan keçməyib! Zəhmət olmasa qeydiyyatdan keçin.");
-    window.location.href = "qeydiyyat.html";
-    return;
-  }
-
-  // ✅ QEYDİYYATDAN KEÇMİŞ EMAIL → OTP GÖNDƏR
-  userEmail = email;
-  generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
-
-  emailjs.send(serviceID, templateID, {
-    email: email,
-    passcode: generatedCode,
-    time: "4 dəq"
-  }).then(() => {
-
-    document.getElementById("emailSection").style.display = "none";
-    document.getElementById("otpMessage").style.display = "block";
-    document.getElementById("codeSection").style.display = "block";
-
-    otpExpireTime = Date.now() + 4 * 60 * 1000;
-    startOtpTimer();
-
-  }).catch(() => {
-    alert("OTP göndərilmədi!");
-  });
-});  bunu hara yaziram
-
 
 
 document.getElementById("sendCodeBtn").addEventListener("click", function() {
@@ -234,7 +195,7 @@ document.getElementById("sendCodeBtn").addEventListener("click", function() {
     let users = JSON.parse(localStorage.getItem("users")) || {};
     if (!users[email]) {
         alert("Bu email qeydiyyatda deyil! Qeydiyyatdan keçin!");
-        window.location.href = "qeydiyyat.html";
+        window.location.href = "https://typingmasteraz.github.io/ayda/saalaam.html";
         return;
     }
 
@@ -276,7 +237,7 @@ document.getElementById("verifyBtn").addEventListener("click", function() {
     // 🔐 Kod yoxlanışı
     if (entered === generatedCode) {
         alert("Doğrulama uğurla tamamlandı!");
-        window.location.href="https://typingmasteraz.github.io/salam./salam.html";
+        window.location.href="https://typingmasteraz.github.io/ayda/saalaam.html";
     } else {
         alert("Kod səhvdir!");
     }
@@ -354,3 +315,4 @@ document.getElementById("resendCode").addEventListener("click", function () {
 </script>
 </body>
 </html>
+
