@@ -1,291 +1,551 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="az">
 <head>
-  <meta charset="UTF-8">
-  <title>Futbol Nəticələri</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Söz Yazma Təcrübəsi — Super Dizayn</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 10px;
-      background: linear-gradient(to right, #e0f7fa, #e0f2f1);
-      color: #333;
+    :root{--bg1:#0f172a;--bg2:#07103a;--card:#0b1220;--accent:#7c3aed;--glass:rgba(255,255,255,0.04);--muted:rgba(255,255,255,0.6)}
+    *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    html,body{height:100%;margin:0}
+    body{
+      background:linear-gradient(135deg,var(--bg1),var(--bg2));
+      color:#e6eef8;display:flex;align-items:center;justify-content:center;padding:32px;flex-direction: column;gap: 20px;overflow: hidden;
     }
-    header {
-      background: #00796b;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    .container{width:100%;max-width:980px}
+
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+      border-radius:18px;padding:28px;box-shadow:0 10px 30px rgba(2,6,23,0.7);backdrop-filter: blur(6px);
     }
-    #goBackButton {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background-color: #00796b;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 16px;
-      font-size: 16px;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      z-index: 999;
+
+    header{display:flex;align-items:center;gap:18px;margin-bottom:18px}
+    .logo {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  overflow: hidden; /* sekil kənardan daşmasın */
+  background: none; /* köhnə rəngi silirik */
+}
+
+.logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* şəkil eyilməsin */
+}
+.huquq{
+  align-items: center;
+  justify-content: center;
+  height: auto;
+}
+
+    h1{font-size:20px;margin:0}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+
+    .top-row{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-top:16px}
+    .stats{display:flex;gap:12px;align-items:center}
+    .stat{background:var(--glass);padding:10px 12px;border-radius:10px;font-weight:600;font-size:13px}
+
+    .stage{display:grid;grid-template-columns:1fr 320px;gap:18px;margin-top:18px}
+
+    /* main typing area */
+    .typing-area{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .word-stream{min-height:140px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .word{padding:6px 10px;border-radius:8px;background:transparent;color:var(--muted);font-weight:600}
+    .word.past{opacity:0.5}
+    .word.current{background:linear-gradient(90deg, rgba(124,58,237,0.14), rgba(59,130,246,0.06));border:1px solid rgba(124,58,237,0.18);color:#fff}
+    .word.correct{background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.18);color:#bbf7d0}
+    .word.wrong{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.16);color:#ffd6d6}
+
+    .input-row{display:flex;gap:12px;margin-top:16px;align-items:center}
+    input[type=text]{flex:1;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;font-size:16px;outline:none}
+    .controls{display:flex;gap:8px}
+    button{background:var(--accent);border:none;color:white;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer}
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+
+    /* right panel */
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .panel h3{margin:0 0 8px 0}
+    .list{max-height:240px;overflow:auto;padding-right:8px}
+    .list-item{display:flex;justify-content:space-between;padding:8px;border-radius:8px;margin-bottom:6px}
+    .list-item.correct{background:rgba(34,197,94,0.04)}
+    .list-item.wrong{background:rgba(239,68,68,0.04)}
+
+    /* results modal */
+    .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(2,6,23,0.6),rgba(2,6,23,0.8));backdrop-filter:blur(4px);}
+    .modal-card{background:linear-gradient(180deg,#071127,#051028);padding:28px;border-radius:14px;max-width:720px;width:92%;color:#eaf2ff}
+    .results-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
+    .result-box{background:rgba(255,255,255,0.03);padding:12px;border-radius:10px;text-align:center}
+
+    footer{margin-top:14px;color:var(--muted);font-size:13px}
+
+    @media(max-width:880px){
+      .stage{grid-template-columns:1fr}
+      .panel{order:2}
     }
-    #goBackButton:hover {
-      background-color: #004d40;
-    }
-    .controls {
+    .oyda{
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 20px 0;
-      justify-content: center;
+      flex-direction: row;
+      margin-right: 30px;
+      
+      
     }
-    input, select, button {
-      padding: 10px;
-      border: 1px solid #bbb;
-      border-radius: 5px;
-      font-size: 1em;
-      background: white;
-      min-width: 150px;
+    h4{
+      margin-left: 500px;
     }
-    .match {
-      background: #fff;
-      padding: 20px;
-      margin: 10px auto;
-      max-width: 800px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    .account-wrapper{
+      margin-left: 501px;
+      height: 30px;
+    
+      width: 55px;
+      border-radius: 10px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
+      gap: 50px;
+      transition: ;
+
+      
+
     }
-    .teams {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .account-wrapper:hover{
+      tr
     }
-    .team-logo {
-      width: 32px;
-      height: 32px;
+    .ayarlar{
+      
     }
-    .stat { margin-top: 10px; width: 100%; }
-    canvas { max-width: 100% !important; }
-    .stat-divider {
-      border-top: 2px solid #00796b;
-      width: 80%;
-      margin: 10px 0;
+    .hesab a{
+      text-decoration: none;
+      color: #e6eef8;
+      height: 25px;
+      width: 200px;
+      text-decoration: none;
+      transition: 0.3s ease;
+
     }
-    .squad {
-      margin-top: 15px;
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      gap: 20px;
+    .hesab:hover{
+      transform: scale(1.1);
     }
-    .squad ul {
-      list-style-type: none;
-      padding: 0;
-    }
-    .squad li {
-      margin: 5px 0;
-    }
-    @media(max-width: 768px) {
-      .controls { flex-direction: column; align-items: stretch; }
-    }
-    #backToTop {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #00796b;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      font-size: 20px;
-      cursor: pointer;
-      display: none;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      z-index: 1000;
-      transition: all 0.3s ease;
-    }
+    .account-menu{
+  position: absolute;
+  top: 35px;
+  right: 0;
+  background: #0b1220;
+  border-radius: 12px;
+  padding: 8px;
+  width: 180px;
+  display: none;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  z-index: 999;
+}
+
+.account-menu a{
+  display: block;
+  padding: 10px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 14px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.account-wrapper{ 
+position: relative;
+text-decoration:none ;
+margin-left: 280px;
+}
+.account-wrapper a{
+  text-decoration: none;
+  color: #e6eef8;
+  text-decoration: double;
+}
+
+.account-menu{
+  position: absolute;
+  top: 35px;
+  right: 0;
+  display: none;
+}
+
+.account-menu.active{
+  display: block;
+}
+
+
+.account-menu a:hover{
+  background: rgba(255,255,255,0.08);
+}
+
+.account-menu.active{
+  display: block;
+}
+.ayarlar{
+  color: #e6eef8;
+  border-radius: 5px;
+  width: 220px;
+}
+.settings-wrapper{
+  position: relative;
+ 
+ 
+}
+
+.settings-menu{
+  position: absolute;
+  top: 35px;
+  right: 0;
+  background: #0b1220;
+  border-radius: 12px;
+  padding: 8px;
+  width: 220px;
+  display: none;
+  height: 100px;
+  flex-direction: column;
+  gap: 50px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.settings-menu.active{
+  display: flex;
+  gap: 20px;
+}
+.settings-menu a{
+  text-decoration:none ;
+  color: #eaf2ff;
+  gap: 20px;
+  font-size: 14px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  display: block;
+  padding: 10px 12px;
+}
+.settings-menu a:hover{
+  background: rgba(255,255,255,0.08);
+  gap: 20px;
+  border-radius: 10px;
+  height: auto;
+}
+
+
+
   </style>
 </head>
 <body>
+  <div class="container">
+    <div class="card">
+<header>
+        <div class="logo">
+            <img src="https://i.postimg.cc/9Qy6YWFZ/Chat-GPT-Image-Nov-27-2025-09-35-45-PM.png" alt="Logo">
+</div>
+<div class="oyda">
+          <h1>TypingMaster-Söz yazma təcrübəsi</h1>
+  <div class="account-wrapper">
+  <a href="#" id="accountBtn">Hesab</a>
+    <div class="ayarlar">
+  <a href="#" id="settingBtn">Parametrlər</a>
+  </div>
+  
+  </div>
+  <div class="account-menu" id="accountMenu">
+    <a href="#">Hesab Məlumatları</a>
+    <a href="#">Hesabdan çıxış</a>
+    <a href="#">Qeydiyyat</a>
+  </div>
+  <div class="settings-menu" id="settingsMenu">
+    <a href="#">Ən çox topladığın xal</a>
+    <a href="#">Ingilis dilində sözlər</a>
+  </div>
+</div>
 
-  <button id="goBackButton" onclick="goBack()">← Geri Qayıt</button>
 
-  <header>
-    <h1>Oyun Nəticələri və keçiriləcək oyunlar</h1>
-  </header>
+          </div>
+        </div>
+</header>
 
-  <div class="controls">
-    <input type="date" id="dateInput">
-    <input type="text" id="searchInput" placeholder="Komanda axtar...">
-    <select id="countryFilter">
-      <option value="">🌍 Bütün ölkələr</option>
-    </select>
-    <select id="leagueFilter">
-      <option value="">🏆 Bütün turnirlər</option>
-    </select>
-    <button onclick="fetchMatches()">🔄 Yenilə</button>
+      <div class="top-row">
+        <div class="stats">
+          <div class="stat">Sözlər: <span id="totalWords">0</span></div>
+          <div class="stat">Düz: <span id="correctCount">0</span></div>
+          <div class="stat">Səhv: <span id="wrongCount">0</span></div>
+          <div class="stat">Vaxt: <span id="timer">00:00</span></div>
+        </div>
+        <div>
+          <label style="font-size:13px;color:var(--muted)">Söz sayı:</label>
+          <select id="wordCount" style="padding:8px;border-radius:8px;background:transparent;color:inherit;border:1px solid rgba(255,255,255,0.04);background-color: black;">
+            <option value="20">20</option>
+            <option value="30" selected>30</option>
+            <option value="40">40</option>
+            <option value="60">60</option>
+            
+
+            
+          </select>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="typing-area">
+          <div class="word-stream" id="wordStream" aria-hidden="false"></div>
+
+          <div class="input-row">
+            <input type="text" id="typingInput" placeholder="İndi yazmağa başla..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+            <div class="controls">
+              <button id="startBtn">Başla</button>
+              <button class="ghost" id="resetBtn">Sıfırla</button>
+            </div>
+          </div>
+
+          <footer>
+            İstifadə qaydası: Sözləri yazıb arada boşluq (space) ilə irəlilə. Hər söz üçün hərf-ə-hərf yoxlanacaq. Sonda nəticələr çıxacaq.
+          </footer>
+        </div>
+
+        <aside class="panel">
+          <h3>Nəticələr (canlı)</h3>
+          <div class="list" id="resultList"></div>
+          <hr style="opacity:0.06;border:none;height:1px;margin:12px 0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.03),transparent)">
+          <div style="display:flex;gap:8px;align-items:center;justify-content:space-between">
+            <small style="color:var(--muted)">Sürət hesabatı</small>
+            <strong id="wpm">0 WPM</strong>
+          </div>
+        </aside>
+      </div>
+    </div>
   </div>
 
-  <h2>📜 Keçmiş Oyunlar</h2>
-  <div id="past-matches">Yüklənir...</div>
+  <!-- modal template -->
+  <div id="modal" style="display:none" class="modal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h2>Nəticələr</h2>
+      <p style="margin:4px 0 0 0;color:var(--muted)">Aşağıda sənin performansın göstərilir.</p>
+      <div class="results-grid" id="resultsGrid"></div>
+      <div style="margin-top:14px;overflow:auto;max-height:260px;padding-right:8px" id="detailedResults"></div>
+      <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
+        <button id="closeModal">Yenidən</button>
+        <button class="ghost" id="downloadBtn">CSV kimi yüklə</button>
+      </div>
+    </div>
+       
+  </div>
+  <div class="huquq">
+  © 2025 TypingMaster. Bütün hüquqlar qorunur.
+</div>
 
-  <h2>🗓️ Gələcək Oyunlar</h2>
-  <div id="upcoming-matches">Yüklənir...</div>
+  
 
-  <button id="backToTop" onclick="scrollToTop()">↑</button>
+ <script>
+/* ===================== WORD LIST ===================== */
+const WORDS = (`salam salamlar komputer kitab internet proqramlaşdırma javascript html css dizayn sürət təcrübə yazmaq düzgün səhv oyun funksiya dəyişən massiv düzbucaqlı tənlik riyaziyyat tarix coğrafiya elm musiqi film sosial media kitabxana universitet alma bal su qapı pəncərə kitab çanta dost yol işıq ev oyun yaz gül dərs telefon kompüter şəkil masa saat məktəb müəllim təcrübə dəftər`).split(' ');
 
-  <script>
-    const dateInput = document.getElementById('dateInput');
-    const searchInput = document.getElementById('searchInput');
-    const countryFilter = document.getElementById('countryFilter');
-    const leagueFilter = document.getElementById('leagueFilter');
-    dateInput.value = new Date().toISOString().split('T')[0];
+const el = id => document.getElementById(id);
 
-    let refreshInterval = setInterval(fetchMatches, 60000);
+/* ===================== ACCOUNT MENU ===================== */
+const accountBtn = document.getElementById("accountBtn");
+const accountMenu = document.getElementById("accountMenu");
 
-    async function fetchMatches() {
-      const date = dateInput.value;
-      const search = searchInput.value.toLowerCase();
-      const selectedCountry = countryFilter.value;
-      const selectedLeague = leagueFilter.value;
-      try {
-        const res = await fetch(`https://api.sofascore.com/api/v1/sport/football/scheduled-events/${date}`);
-        const data = await res.json();
-        const events = data.events;
+accountBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  accountMenu.classList.toggle("active");
+});
 
-        const countries = [...new Set(events.map(e => e.tournament.category.country.name))];
-        const leagues = [...new Set(events.map(e => e.tournament.name))];
-        countryFilter.innerHTML = '<option value="">🌍 Bütün ölkələr</option>' + countries.map(c => `<option value="${c}">${c}</option>`).join('');
-        leagueFilter.innerHTML = '<option value="">🏆 Bütün turnirlər</option>' + leagues.map(l => `<option value="${l}">${l}</option>`).join('');
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".account-wrapper")) {
+    accountMenu.classList.remove("active");
+  }
+});
 
-        const filtered = events.filter(e =>
-          (e.homeTeam.name.toLowerCase().includes(search) || e.awayTeam.name.toLowerCase().includes(search)) &&
-          (selectedCountry === '' || e.tournament.category.country.name === selectedCountry) &&
-          (selectedLeague === '' || e.tournament.name === selectedLeague)
-        );
+/* ===================== STATE ===================== */
+let settings = { count: parseInt(el('wordCount')?.value || 30) };
+let state = {
+  words: [],
+  index: 0,
+  correct: 0,
+  wrong: 0,
+  startTime: null,
+  finished: false,
+  perWord: []
+};
 
-        const past = filtered.filter(e => e.status.type === "finished");
-        const upcoming = filtered.filter(e => e.status.type === "notstarted");
 
-        displayMatches(past, 'past-matches', true);
-        displayMatches(upcoming, 'upcoming-matches', false);
+let timerInterval = null;
 
-      } catch (err) {
-        document.getElementById('past-matches').innerText = '❌ Xəta baş verdi.';
-        document.getElementById('upcoming-matches').innerText = '❌ Xəta baş verdi.';
+/* ===================== WORD PICK ===================== */
+function pickWords(n){
+  let pool = [...WORDS];
+  for(let i = pool.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, n);
+}
+
+/* ===================== RENDER ===================== */
+function renderStream(){
+  const stream = el('wordStream');
+  stream.innerHTML = '';
+
+  state.words.forEach((w,i)=>{
+    const span = document.createElement('div');
+    span.className = 'word';
+
+    if(i < state.index) span.classList.add('past');
+    if(i === state.index) span.classList.add('current');
+    if(state.perWord[i]) span.classList.add(state.perWord[i].correct ? 'correct' : 'wrong');
+
+    if(i === state.index){
+      const typed = el('typingInput').value;
+      for(let k=0;k<w.length;k++){
+        const ch = document.createElement('span');
+        ch.textContent = w[k];
+        if(k < typed.length && typed[k] !== w[k]) ch.style.color = '#ffb4b4';
+        span.appendChild(ch);
       }
+    } else {
+      span.textContent = w;
     }
 
-    async function displayMatches(matches, elementId, loadStats = false) {
-      const container = document.getElementById(elementId);
-      container.innerHTML = '';
-      if (matches.length === 0) {
-        container.innerText = '⚠️ Oyun tapılmadı.';
-        return;
-      }
+    stream.appendChild(span);
+  });
+}
 
-      for (const match of matches.slice(0, 5)) {
-        const logo1 = `https://api.sofascore.app/api/v1/team/${match.homeTeam.id}/image`;
-        const logo2 = `https://api.sofascore.app/api/v1/team/${match.awayTeam.id}/image`;
+function updateStats(){
+  el('totalWords').textContent = state.words.length;
+  el('correctCount').textContent = state.correct;
+  el('wrongCount').textContent = state.wrong;
+  el('wpm').textContent = calcWPM() + ' WPM';
+}
 
-        const div = document.createElement('div');
-        div.className = 'match';
+/* ===================== TIMER ===================== */
+function calcWPM(){
+  if(!state.startTime) return 0;
+  const minutes = (Date.now() - state.startTime) / 60000;
+  return minutes ? Math.round(state.index / minutes) : 0;
+}
 
-        div.innerHTML = `
-          <div class="teams">
-            <img class="team-logo" src="${logo1}" alt="logo">
-            <strong>${match.homeTeam.name}</strong>
-            <span>${match.homeScore.current ?? ''} - ${match.awayScore.current ?? ''}</span>
-            <strong>${match.awayTeam.name}</strong>
-            <img class="team-logo" src="${logo2}" alt="logo">
-          </div>
-          <div>
-            🗺️ Ölkə: ${match.tournament.category.country.name}<br>
-            🏆 Turnir: ${match.tournament.name}<br>
-            ⏰ Tarix: ${new Date(match.startTimestamp * 1000).toLocaleString()}
-          </div>
-        `;
+function startTimer(){
+  clearInterval(timerInterval);
+  state.startTime = Date.now();
+  timerInterval = setInterval(()=>{
+    const sec = Math.floor((Date.now()-state.startTime)/1000);
+    el('timer').textContent =
+      String(Math.floor(sec/60)).padStart(2,'0') + ':' +
+      String(sec%60).padStart(2,'0');
+    el('wpm').textContent = calcWPM() + ' WPM';
+  },500);
+}
 
-        if (loadStats) {
-          const statDiv = document.createElement('div');
-          statDiv.className = 'stat';
-          statDiv.innerText = '📊 Statistikalar yüklənir...';
-          div.appendChild(statDiv);
+function stopTimer(){
+  clearInterval(timerInterval);
+}
 
-          const divider = document.createElement('div');
-          divider.className = 'stat-divider';
-          div.appendChild(divider);
+/* ===================== TEST FLOW ===================== */
+function startTest(){
+  settings.count = parseInt(el('wordCount').value);
+  state.words = pickWords(settings.count);
+  state.index = 0;
+  state.correct = 0;
+  state.wrong = 0;
+  state.perWord = [];
+  state.finished = false;
 
-          try {
-            const statsRes = await fetch(`https://api.sofascore.com/api/v1/event/${match.id}/statistics`);
-            const statData = await statsRes.json();
-            if (statData.statistics?.length > 0) {
-              const items = statData.statistics[0].groups.flatMap(g => g.statisticsItems);
-              const homeStats = items.filter(i => i.home !== undefined).map(i => i.home);
-              const awayStats = items.filter(i => i.away !== undefined).map(i => i.away);
+  el('typingInput').value = '';
+  el('typingInput').disabled = false;
+  el('typingInput').focus();
 
-              statDiv.innerHTML = `
-                <p><strong>${match.homeTeam.name}</strong> - 🏆 Topa Sahip Olma: ${homeStats[0]}%</p>
-                <p><strong>${match.awayTeam.name}</strong> - 🏆 Topa Sahip Olma: ${awayStats[0]}%</p>
-                <p><strong>${match.homeTeam.name}</strong> - ⚽ Qollar: ${homeStats[1]}</p>
-                <p><strong>${match.awayTeam.name}</strong> - ⚽ Qollar: ${awayStats[1]}</p>
-              `;
-            } else {
-              statDiv.innerText = '⚠️ Statistikalar mövcud deyil.';
-            }
+  renderStream();
+  updateStats();
+  startTimer();
+  renderResultList();
+}
 
-            const squadDiv = document.createElement('div');
-            squadDiv.className = 'squad';
-            div.appendChild(squadDiv);
+function finishTest(){
+  state.finished = true;
+  el('typingInput').disabled = true;
+  stopTimer();
+  showModal();
+}
 
-            const homeSquadRes = await fetch(`https://api.sofascore.com/api/v1/event/${match.id}/lineups?teamId=${match.homeTeam.id}`);
-            const awaySquadRes = await fetch(`https://api.sofascore.com/api/v1/event/${match.id}/lineups?teamId=${match.awayTeam.id}`);
-            const homeSquadData = await homeSquadRes.json();
-            const awaySquadData = await awaySquadRes.json();
+/* ===================== INPUT ===================== */
+function handleInput(e){
+  if(state.finished) return;
 
-            const homeSquad = homeSquadData.lineup.map(player => `<li>${player.player.name}</li>`).join('');
-            const awaySquad = awaySquadData.lineup.map(player => `<li>${player.player.name}</li>`).join('');
+  if(e.target.value.endsWith(' ')){
+    const typed = e.target.value.trim();
+    const word = state.words[state.index];
+    const correct = typed === word;
 
-            const homeSubs = homeSquadData.substitutes.map(sub => `<li>${sub.player.name}</li>`).join('');
-            const awaySubs = awaySquadData.substitutes.map(sub => `<li>${sub.player.name}</li>`).join('');
+    state.perWord[state.index] = {word, typed, correct};
+    correct ? state.correct++ : state.wrong++;
+    state.index++;
 
-            squadDiv.innerHTML = `
-              <div><strong>${match.homeTeam.name}</strong><ul>${homeSquad}</ul><p><em>Əvəzləmələr:</em><ul>${homeSubs}</ul></p></div>
-              <div><strong>${match.awayTeam.name}</strong><ul>${awaySquad}</ul><p><em>Əvəzləmələr:</em><ul>${awaySubs}</ul></p></div>
-            `;
+    e.target.value = '';
 
-          } catch {
-            statDiv.innerText = '❌ Statistikalar tapılmadı.';
-          }
-        }
-
-        container.appendChild(div);
-      }
+    if(state.index >= state.words.length){
+      finishTest();
     }
 
-    function goBack() {
-      window.history.back();
-    }
+    renderStream();
+    updateStats();
+    renderResultList();
+  } else {
+    renderStream();
+  }
+}
 
-    function scrollToTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+/* ===================== RESULT LIST ===================== */
+function renderResultList(){
+  const list = el('resultList');
+  list.innerHTML = '';
+  state.words.forEach((w,i)=>{
+    const div = document.createElement('div');
+    div.className = 'list-item ' + (state.perWord[i]?.correct ? 'correct' : state.perWord[i] ? 'wrong' : '');
+    div.innerHTML = `<div>${i+1}. ${w}</div><div>${state.perWord[i] ? (state.perWord[i].correct?'✔':'✖'):'—'}</div>`;
+    list.appendChild(div);
+  });
+}
 
-    const backToTopBtn = document.getElementById("backToTop");
-    window.addEventListener("scroll", () => {
-      backToTopBtn.style.display = window.scrollY > 300 ? "block" : "none";
-    });
+/* ===================== MODAL ===================== */
+function showModal(){
+  el('modal').style.display = 'flex';
+}
 
-    fetchMatches();
-  </script>
+function closeModal(){
+  el('modal').style.display = 'none';
+  startTest();
+}
+
+/* ===================== EVENTS ===================== */
+el('typingInput').addEventListener('input', handleInput);
+el('startBtn').addEventListener('click', startTest);
+el('resetBtn').addEventListener('click', startTest);
+el('wordCount').addEventListener('change', startTest);
+el('closeModal').addEventListener('click', closeModal);
+
+/* ===================== INIT ===================== */
+startTest();
+const settingBtn = document.getElementById("settingBtn");
+const settingsMenu = document.getElementById("settingsMenu");
+
+settingBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  settingsMenu.classList.toggle("active");
+});
+
+// kənara klik ediləndə bağlansın
+document.addEventListener("click", (e) => {
+  if (
+    !e.target.closest("#settingBtn") &&
+    !e.target.closest("#settingsMenu")
+  ) {
+    settingsMenu.classList.remove("active");
+  }
+});
+</script>
+
 </body>
 </html>
