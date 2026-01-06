@@ -116,55 +116,69 @@ h4{
   </style>
 
   <!-- Firebase CDN -->
- <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider } 
-    from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider } 
+from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+import { 
+  getFirestore, 
+  collection, 
+  query, 
+  where, 
+  getDocs, 
+  addDoc, 
+  serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAjhmCJIZaLB3UmnOwm1NUqbIgvlmfQW2o",
-      authDomain: "typingmaster-185d7.firebaseapp.com",
-      projectId: "typingmaster-185d7",
-      storageBucket: "typingmaster-185d7.firebasestorage.app",
-      messagingSenderId: "1035769402672",
-      appId: "1:1035769402672:web:1e539808df0b40777a24f5"
-    };
+const firebaseConfig = {
+  apiKey: "AIzaSyAjhmCJIZaLB3UmnOwm1NUqbIgvlmfQW2o",
+  authDomain: "typingmaster-185d7.firebaseapp.com",
+  projectId: "typingmaster-185d7",
+  storageBucket: "typingmaster-185d7.firebasestorage.app",
+  messagingSenderId: "1035769402672",
+  appId: "1:1035769402672:web:1e539808df0b40777a24f5"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
 
-    window.googleLogin = function () {
-  signInWithPopup(auth, provider)
-    .then((result) => {
-      const email = result.user.email;
-      let users = JSON.parse(localStorage.getItem("users")) || {};
+window.googleLogin = async function () {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const email = result.user.email;
 
-      // ❌ ƏGƏR EMAIL ARTIQ QEYDİYYATDADIRSA
-      if (users[email]) {
-        alert("Bu email artıq qeydiyyatdan keçib! Zəhmət olmasa daxil olun.");
-        window.location.href = "https://typingmasteraz.github.io/ayda/saalaam.html"; // login səhifəsi
-        return;
-      }
+    // 🔍 EMAIL ARTİQ QEYDİYYATDADIRMI?
+    const q = query(
+      collection(db, "users"),
+      where("email", "==", email)
+    );
+    const querySnapshot = await getDocs(q);
 
-      // ✅ YENİ QEYDİYYAT
-      users[email] = {
-        provider: "google",
-        registeredAt: new Date().toISOString()
-      };
+    if (!querySnapshot.empty) {
+      alert("Bu email artıq qeydiyyatdan keçib! Zəhmət olmasa daxil olun.");
+      window.location.href = "https://typingmasteraz.github.io/ayda/daxil-ol.html";
+      return;
+    }
 
-      localStorage.setItem("users", JSON.stringify(users));
-      localStorage.setItem("loggedInUser", email);
+    // ✅ YENİ QEYDİYYAT – FIRESTORE
+    await addDoc(collection(db, "users"), {
+      email: email,
+      provider: "google",
+      createdAt: serverTimestamp()
+    });
 
-      alert("Qeydiyyat uğurla tamamlandı!");
-      window.location.href = "salam.html";
-    })
-    .catch(() => alert("Xəta oldu!"));
-  };
+    alert("Qeydiyyat uğurla tamamlandı!");
+    window.location.href = "salam.html";
 
+  } catch (error) {
+    console.error(error);
+    alert("Google ilə qeydiyyat zamanı xəta baş verdi!");
+  }
+};
+</script>
 
-   
-  </script>
 </head>
 
 <body style="display:flex; justify-content:center; align-items:center; height:100vh;">
