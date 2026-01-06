@@ -223,14 +223,22 @@ document.getElementById("sendCodeBtn").addEventListener("click", async () => {
   }
 
   // 🔍 Firestore-da yoxla
-  const userRef = doc(db, "users", email);
-  const userSnap = await getDoc(userRef);
+  import { collection, query, where, getDocs } 
+from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
-  if (!userSnap.exists()) {
-    alert("Bu email qeydiyyatdan keçməyib!");
-    window.location.href = "qeydiyyat.html";
-    return;
-  }
+const q = query(
+  collection(db, "users"),
+  where("email", "==", email)
+);
+
+const querySnapshot = await getDocs(q);
+
+if (querySnapshot.empty) {
+  alert("Bu email qeydiyyatdan keçməyib!");
+  window.location.href = "qeydiyyat.html";
+  return;
+}
+
 
   // 🔐 OTP
   generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -285,4 +293,3 @@ function startOtpTimer() {
 
 </body>
 </html>
-
