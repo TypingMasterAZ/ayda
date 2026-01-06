@@ -190,8 +190,13 @@ textarea, #codeInput, #emailInput {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getFirestore, doc, getDoc } 
-from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { 
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
 // 🔥 Firebase config
 const firebaseConfig = {
@@ -217,30 +222,27 @@ let timerInterval = null;
 
 document.getElementById("sendCodeBtn").addEventListener("click", async () => {
   const email = document.getElementById("emailInput").value.trim();
+
   if (!email) {
     alert("Email daxil edin!");
     return;
   }
 
-  // 🔍 Firestore-da yoxla
-  import { collection, query, where, getDocs } 
-from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+  // 🔍 Firestore-da email yoxlanır
+  const q = query(
+    collection(db, "users"),
+    where("email", "==", email)
+  );
 
-const q = query(
-  collection(db, "users"),
-  where("email", "==", email)
-);
+  const querySnapshot = await getDocs(q);
 
-const querySnapshot = await getDocs(q);
+  if (querySnapshot.empty) {
+    alert("Bu email qeydiyyatdan keçməyib!");
+    window.location.href = "qeydiyyat.html";
+    return;
+  }
 
-if (querySnapshot.empty) {
-  alert("Bu email qeydiyyatdan keçməyib!");
-  window.location.href = "qeydiyyat.html";
-  return;
-}
-
-
-  // 🔐 OTP
+  // 🔐 OTP yaradılır
   generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
 
   await emailjs.send(serviceID, templateID, {
@@ -279,11 +281,13 @@ function startOtpTimer() {
 
   timerInterval = setInterval(() => {
     const remaining = otpExpireTime - Date.now();
+
     if (remaining <= 0) {
       clearInterval(timerInterval);
       timerText.innerText = "⛔ Vaxt bitdi!";
       return;
     }
+
     const m = Math.floor(remaining / 60000);
     const s = Math.floor((remaining % 60000) / 1000);
     timerText.innerText = `⏳ ${m}:${s.toString().padStart(2, "0")}`;
