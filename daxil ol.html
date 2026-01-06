@@ -120,6 +120,19 @@ h3{
 .yenidenkod{
     cursor: pointer;
 }
+textarea, #codeInput, #emailInput {
+    border-radius: 20px;
+    width: 80%;
+    padding: 10px;
+    font-size: 16px;
+    border: 3px solid brown;
+    margin-top: 20px;
+    font-family: 'Poppins';
+    height: 30px;
+    box-shadow: 0 0 0 5px rgba(56, 133, 244, 0.25);
+    border-color:#4285f4 ;
+}
+
 
     
     
@@ -140,7 +153,8 @@ h3{
   
 
     <div id="emailSection">
-        <textarea id="emailInput" placeholder="Emailinizi daxil edin"></textarea>
+        <input type="email" id="emailInput" placeholder="Emailinizi daxil edin">
+
         <br>
         <button id="sendCodeBtn">Kodu Göndər</button>
     
@@ -170,8 +184,29 @@ h3{
     
 
 
+<!-- EMAILJS -->
+<!-- EMAILJS -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getFirestore, doc, getDoc } 
+from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+// 🔥 Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyAjhmCJIZaLB3UmnOwm1NUqbIgvlmfQW2o",
+  authDomain: "typingmaster-185d7.firebaseapp.com",
+  projectId: "typingmaster-185d7",
+  storageBucket: "typingmaster-185d7.firebasestorage.app",
+  messagingSenderId: "1035769402672",
+  appId: "1:1035769402672:web:1e539808df0b40777a24f5"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 📧 EmailJS
 emailjs.init("xEfr4FxWCyZag9EgB");
 const serviceID = "service_4jeponl";
 const templateID = "template_03qfkuv";
@@ -179,139 +214,75 @@ const templateID = "template_03qfkuv";
 let generatedCode = "";
 let otpExpireTime = null;
 let timerInterval = null;
-let userEmail = "";
 
+document.getElementById("sendCodeBtn").addEventListener("click", async () => {
+  const email = document.getElementById("emailInput").value.trim();
+  if (!email) {
+    alert("Email daxil edin!");
+    return;
+  }
 
+  // 🔍 Firestore-da yoxla
+  const userRef = doc(db, "users", email);
+  const userSnap = await getDoc(userRef);
 
-document.getElementById("sendCodeBtn").addEventListener("click", function() {
-    const email = document.getElementById("emailInput").value.trim();
-    if (!email) {
-        alert("Email daxil edin!");
-        return;
-    }
-    userEmail = email;
+  if (!userSnap.exists()) {
+    alert("Bu email qeydiyyatdan keçməyib!");
+    window.location.href = "qeydiyyat.html";
+    return;
+  }
 
+  // 🔐 OTP
+  generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-    let users = JSON.parse(localStorage.getItem("users")) || {};
-    if (!users[email]) {
-        alert("Bu email qeydiyyatda deyil! Qeydiyyatdan keçin!");
-        window.location.href = "https://typingmasteraz.github.io/ayda/qeydiyyat.html";
-        return;
-    }
+  await emailjs.send(serviceID, templateID, {
+    email: email,
+    passcode: generatedCode,
+    time: "4 dəq"
+  });
 
-    document.querySelector("h1").style.display = "none";
+  document.getElementById("emailSection").style.display = "none";
+  document.getElementById("codeSection").style.display = "block";
 
-    generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
-
-    emailjs.send(serviceID, templateID, {
-        email: email,
-        passcode: generatedCode,
-        time: "15 dəq"
-    })
-    .then(() => {
-    document.getElementById("emailSection").style.display = "none";
-    document.getElementById("otpMessage").style.display = "block";
-    document.getElementById("codeSection").style.display = "block";
-
-    // 4 dəqiqəlik vaxt (millisaniyə ilə)
-    otpExpireTime = Date.now() + 4 * 60 * 1000;
-
-    startOtpTimer();
-})
-
-    .catch(err => {
-        alert("Email göndərilə bilmədi!");
-        console.log(err);
-    });
+  otpExpireTime = Date.now() + 4 * 60 * 1000;
+  startOtpTimer();
 });
 
-document.getElementById("verifyBtn").addEventListener("click", function() {
-    const entered = document.getElementById("codeInput").value.trim();
+document.getElementById("verifyBtn").addEventListener("click", () => {
+  const entered = document.getElementById("codeInput").value.trim();
 
-    // ⏰ Vaxt yoxlanışı
-    if (Date.now() > otpExpireTime) {
-        alert("OTP vaxtı bitib!");
-        return;
-    }
+  if (Date.now() > otpExpireTime) {
+    alert("OTP vaxtı bitib!");
+    return;
+  }
 
-    // 🔐 Kod yoxlanışı
-    if (entered === generatedCode) {
-        alert("Doğrulama uğurla tamamlandı!");
-        window.location.href="https://typingmasteraz.github.io/ayda/saalaam.html";
-    } else {
-        alert("Kod səhvdir!");
-    }
+  if (entered === generatedCode) {
+    alert("Doğrulama uğurludur!");
+    window.location.href = "saalaam.html";
+  } else {
+    alert("Kod səhvdir!");
+  }
 });
 
 function startOtpTimer() {
-    const timerText = document.createElement("div");
-    timerText.id = "timerText";
-    timerText.style.marginTop = "15px";
-    timerText.style.fontSize = "18px";
-    timerText.style.fontWeight = "600";
-    document.getElementById("codeSection").appendChild(timerText);
+  const timerText = document.createElement("div");
+  timerText.style.marginTop = "15px";
+  document.getElementById("codeSection").appendChild(timerText);
 
-    timerInterval = setInterval(() => {
-        const remaining = otpExpireTime - Date.now();
-
-       if (remaining <= 0) {
-    clearInterval(timerInterval);
-    timerText.innerText = "⛔ Vaxt bitdi! Kodu yenidən göndərin";
-
-    document.getElementById("verifyBtn").disabled = true;
-    document.getElementById("codeInput").disabled = true;
-
-    const resend = document.getElementById("resendCode");
-    resend.style.display = "block";
-    resend.style.opacity = "1";
-    resend.style.pointerEvents = "auto";
-    return;
+  timerInterval = setInterval(() => {
+    const remaining = otpExpireTime - Date.now();
+    if (remaining <= 0) {
+      clearInterval(timerInterval);
+      timerText.innerText = "⛔ Vaxt bitdi!";
+      return;
+    }
+    const m = Math.floor(remaining / 60000);
+    const s = Math.floor((remaining % 60000) / 1000);
+    timerText.innerText = `⏳ ${m}:${s.toString().padStart(2, "0")}`;
+  }, 1000);
 }
-
-
-        const minutes = Math.floor(remaining / 60000);
-        const seconds = Math.floor((remaining % 60000) / 1000);
-
-        timerText.innerText = `⏳ Qalan vaxt: ${minutes}:${seconds.toString().padStart(2, "0")}`;
-    }, 1000);
-}
-document.getElementById("resendCode").addEventListener("click", function () {
-
-    // Yeni OTP yarat
-    generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
-
-    emailjs.send(serviceID, templateID, {
-        email: userEmail,
-        passcode: generatedCode,
-        time: "1 dəq"
-    }).then(() => {
-
-        alert("Yeni OTP kod göndərildi!");
-
-        // Inputları aktiv et
-        document.getElementById("codeInput").disabled = false;
-        document.getElementById("verifyBtn").disabled = false;
-        document.getElementById("codeInput").value = "";
-
-        // Yenidən vaxt başlasın
-        otpExpireTime = Date.now() + 4 * 60 * 1000;
-
-        // Köhnə timer silinsin
-        clearInterval(timerInterval);
-        document.getElementById("timerText").remove();
-
-        startOtpTimer();
-
-        // Yenidən göndər gizlənsin
-        this.style.display = "none";
-
-    }).catch(err => {
-        alert("OTP yenidən göndərilə bilmədi!");
-        console.log(err);
-    });
-});
-
-
 </script>
+
 </body>
 </html>
+
