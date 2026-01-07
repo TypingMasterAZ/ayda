@@ -354,9 +354,13 @@ accountBtn.addEventListener("click", (e) => {
 });
 
 document.addEventListener("click", (e) => {
-  if (!e.target.closest(".account-wrapper")) {
-    accountMenu.classList.remove("active");
-  }
+ if (
+  !e.target.closest(".account-wrapper") &&
+  !e.target.closest("#accountMenu")
+) {
+  accountMenu.classList.remove("active");
+}
+
 });
 
 /* ===================== STATE ===================== */
@@ -591,15 +595,21 @@ if (savedEmail) {
   }
 }
 
-// ƏGƏR QEYDİYYATDAN KEÇMƏYİBSƏ
 accountInfoBtn.addEventListener("click", function (e) {
-  const emailNow = localStorage.getItem("userEmail"); // 🔥 CANLI YOXLAMA
+  e.stopPropagation(); // menyunun bağlanmasının qarşısını alır
+
+  const emailNow = localStorage.getItem("userEmail");
 
   if (!emailNow) {
     e.preventDefault();
     showNotification("❗ Qeydiyyatdan keçməmisiniz");
+    return;
   }
+
+  // ✅ qeydiyyatdan keçibsə
+  window.location.href = "account.html";
 });
+
 
 
 
