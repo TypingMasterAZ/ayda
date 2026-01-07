@@ -250,10 +250,10 @@ margin-left: 280px;
   <a href="#" id="settingBtn">Parametrlər</a>
   </div>
   
-  </div>
-  <div class="account-menu" id="accountMenu">
+  
+   <div class="account-menu" id="accountMenu">
     <a href="https://typingmasteraz.github.io/ayda/qeydiyyat.html">Qeydiyyat</a>
-    <a href="#" id="logoutBtn">Hesabdan çıxış</a>
+    <a href="#" id="logoutMenutBtn">Hesabdan çıxış</a>
     <a href="#" id="accountInfoBtn">Hesab Məlumatları</a>
   </div>
   <div class="settings-menu" id="settingsMenu">
@@ -347,21 +347,34 @@ const el = id => document.getElementById(id);
 /* ===================== ACCOUNT MENU ===================== */
 const accountBtn = document.getElementById("accountBtn");
 const accountMenu = document.getElementById("accountMenu");
+const settingBtn = document.getElementById("settingBtn");
+const settingsMenu = document.getElementById("settingsMenu");
 
 accountBtn.addEventListener("click", (e) => {
   e.preventDefault();
   accountMenu.classList.toggle("active");
 });
 
-document.addEventListener("click", (e) => {
- if (
-  !e.target.closest(".account-wrapper") &&
-  !e.target.closest("#accountMenu") &&
-  !e.target.closest("#accountInfoBtn")
-) {
-  accountMenu.classList.remove("active");
-}
+settingBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  settingsMenu.classList.toggle("active");
+});
 
+/* kənara klik ediləndə menyular bağlansın */
+document.addEventListener("click", (e) => {
+  if (
+    !e.target.closest(".account-wrapper") &&
+    !e.target.closest("#accountMenu")
+  ) {
+    accountMenu.classList.remove("active");
+  }
+
+  if (
+    !e.target.closest("#settingBtn") &&
+    !e.target.closest("#settingsMenu")
+  ) {
+    settingsMenu.classList.remove("active");
+  }
 });
 
 /* ===================== STATE ===================== */
@@ -375,7 +388,6 @@ let state = {
   finished: false,
   perWord: []
 };
-
 
 let timerInterval = null;
 
@@ -533,23 +545,8 @@ el('closeModal').addEventListener('click', closeModal);
 
 /* ===================== INIT ===================== */
 startTest();
-const settingBtn = document.getElementById("settingBtn");
-const settingsMenu = document.getElementById("settingsMenu");
 
-settingBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  settingsMenu.classList.toggle("active");
-});
-
-// kənara klik ediləndə bağlansın
-document.addEventListener("click", (e) => {
-  if (
-    !e.target.closest("#settingBtn") &&
-    !e.target.closest("#settingsMenu")
-  ) {
-    settingsMenu.classList.remove("active");
-  }
-});
+/* ===================== NOTIFICATION ===================== */
 function showNotification(text) {
   const note = document.createElement("div");
   note.textContent = text;
@@ -568,37 +565,25 @@ function showNotification(text) {
 
   document.body.appendChild(note);
 
-  setTimeout(() => {
-    note.remove();
-  }, 2500);
+  setTimeout(() => note.remove(), 2500);
 }
-
 
 /* ===================== AUTH LOGIC ===================== */
 const savedEmail = localStorage.getItem("userEmail");
 
-const registerLink = document.querySelector(
-  '#accountMenu a[href*="qeydiyyat"]'
-);
+const registerLink = document.querySelector('#accountMenu a[href*="qeydiyyat"]');
 const accountInfoBtn = document.getElementById("accountInfoBtn");
 const accountBtnTop = document.getElementById("accountBtn");
 
-// ƏGƏR QEYDİYYATDAN KEÇİBSƏ
 if (savedEmail) {
   const username = savedEmail.split("@")[0];
-
-  // Hesab adını dəyiş
   accountBtnTop.textContent = username;
-
-  // Qeydiyyat linkini gizlət
-  if (registerLink) {
-    registerLink.style.display = "none";
-  }
+  if (registerLink) registerLink.style.display = "none";
 }
 
 accountInfoBtn.addEventListener("click", function (e) {
   e.preventDefault();
-  e.stopImmediatePropagation(); // 🔥 ƏN VACİB SƏTR
+  e.stopPropagation();
 
   const emailNow = localStorage.getItem("userEmail");
 
@@ -607,18 +592,11 @@ accountInfoBtn.addEventListener("click", function (e) {
     return;
   }
 
-  // GitHub Pages üçün DÜZGÜN yol
-  window.location.href = "https://typingmasteraz.github.io/ayda/account.html";
+  window.location.href =
+    "https://typingmasteraz.github.io/ayda/account.html";
 });
-
-
-
-
-
-
-
-
 </script>
+
 
 </body>
 </html>
