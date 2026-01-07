@@ -254,7 +254,7 @@ margin-left: 280px;
   <div class="account-menu" id="accountMenu">
     <a href="https://typingmasteraz.github.io/ayda/qeydiyyat.html">Qeydiyyat</a>
     <a href="#" id="logoutBtn">Hesabdan çıxış</a>
-    <a href="#">Hesab Məlumatları</a>
+    <a href="#" id="accountInfoBtn">Hesab Məlumatları</a>
   </div>
   <div class="settings-menu" id="settingsMenu">
     <a href="#">Ən çox topladığın xal</a>
@@ -545,35 +545,61 @@ document.addEventListener("click", (e) => {
     settingsMenu.classList.remove("active");
   }
 });
-/* ===================== USER NAME ===================== */
+function showNotification(text) {
+  const note = document.createElement("div");
+  note.textContent = text;
+
+  note.style.position = "fixed";
+  note.style.top = "20px";
+  note.style.left = "50%";
+  note.style.transform = "translateX(-50%)";
+  note.style.background = "#dc2626";
+  note.style.color = "#fff";
+  note.style.padding = "12px 20px";
+  note.style.borderRadius = "10px";
+  note.style.fontWeight = "600";
+  note.style.zIndex = "9999";
+  note.style.boxShadow = "0 10px 25px rgba(0,0,0,0.4)";
+
+  document.body.appendChild(note);
+
+  setTimeout(() => {
+    note.remove();
+  }, 2500);
+}
+
+
+/* ===================== AUTH LOGIC ===================== */
 const savedEmail = localStorage.getItem("userEmail");
 
+const registerLink = document.querySelector(
+  '#accountMenu a[href*="qeydiyyat"]'
+);
+const accountInfoBtn = document.getElementById("accountInfoBtn");
+const accountBtnTop = document.getElementById("accountBtn");
+
+// ƏGƏR QEYDİYYATDAN KEÇİBSƏ
 if (savedEmail) {
-  // @ işarəsindən əvvəlki hissə
   const username = savedEmail.split("@")[0];
 
-  // Hesab yazısını dəyiş
-  const accountBtn = document.getElementById("accountBtn");
-  accountBtn.textContent = username;
+  // Hesab adını dəyiş
+  accountBtnTop.textContent = username;
+
+  // Qeydiyyat linkini gizlət
+  if (registerLink) {
+    registerLink.style.display = "none";
+  }
 }
-document.getElementById("logoutBtn")?.addEventListener("click", function (e) {
-  e.preventDefault();
-  localStorage.removeItem("userEmail");
-  window.location.reload();
-});
-window.addEventListener("DOMContentLoaded", () => {
-  const savedEmail = localStorage.getItem("userEmail");
-  console.log("EMAIL:", savedEmail);
 
-  if (savedEmail) {
-    const username = savedEmail.split("@")[0];
-    const accountBtn = document.getElementById("accountBtn");
-
-    if (accountBtn) {
-      accountBtn.textContent = username;
-    }
+// ƏGƏR QEYDİYYATDAN KEÇMƏYİBSƏ
+accountInfoBtn.addEventListener("click", function (e) {
+  if (!savedEmail) {
+    e.preventDefault();
+    showNotification("❗ Qeydiyyatdan keçməmisiniz");
   }
 });
+
+
 
 
 
