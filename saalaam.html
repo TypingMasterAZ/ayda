@@ -253,7 +253,7 @@ margin-left: 280px;
   </div>
   <div class="account-menu" id="accountMenu">
     <a href="https://typingmasteraz.github.io/ayda/qeydiyyat.html">Qeydiyyat</a>
-    <a href="#">Hesabdan çıxış</a>
+    <a href="#" id="logoutBtn">Hesabdan çıxış</a>
     <a href="#">Hesab Məlumatları</a>
   </div>
   <div class="settings-menu" id="settingsMenu">
@@ -545,7 +545,26 @@ document.addEventListener("click", (e) => {
     settingsMenu.classList.remove("active");
   }
 });
+/* ===================== USER NAME ===================== */
+const savedEmail = localStorage.getItem("userEmail");
+
+if (savedEmail) {
+  // @ işarəsindən əvvəlki hissə
+  const username = savedEmail.split("@")[0];
+
+  // Hesab yazısını dəyiş
+  const accountBtn = document.getElementById("accountBtn");
+  accountBtn.textContent = username;
+}
+document.getElementById("logoutBtn")?.addEventListener("click", function (e) {
+  e.preventDefault();
+  localStorage.removeItem("userEmail");
+  window.location.reload();
+});
+
+
 </script>
 
 </body>
 </html>
+
