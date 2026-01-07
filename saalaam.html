@@ -593,11 +593,14 @@ if (savedEmail) {
 
 // ƏGƏR QEYDİYYATDAN KEÇMƏYİBSƏ
 accountInfoBtn.addEventListener("click", function (e) {
-  if (!savedEmail) {
+  const emailNow = localStorage.getItem("userEmail"); // 🔥 CANLI YOXLAMA
+
+  if (!emailNow) {
     e.preventDefault();
     showNotification("❗ Qeydiyyatdan keçməmisiniz");
   }
 });
+
 
 
 
