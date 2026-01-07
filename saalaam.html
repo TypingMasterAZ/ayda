@@ -356,7 +356,8 @@ accountBtn.addEventListener("click", (e) => {
 document.addEventListener("click", (e) => {
  if (
   !e.target.closest(".account-wrapper") &&
-  !e.target.closest("#accountMenu")
+  !e.target.closest("#accountMenu") &&
+  !e.target.closest("#accountInfoBtn")
 ) {
   accountMenu.classList.remove("active");
 }
@@ -596,19 +597,20 @@ if (savedEmail) {
 }
 
 accountInfoBtn.addEventListener("click", function (e) {
-  e.stopPropagation(); // menyunun bağlanmasının qarşısını alır
+  e.preventDefault();
+  e.stopImmediatePropagation(); // 🔥 ƏN VACİB SƏTR
 
   const emailNow = localStorage.getItem("userEmail");
 
   if (!emailNow) {
-    e.preventDefault();
     showNotification("❗ Qeydiyyatdan keçməmisiniz");
     return;
   }
 
-  // ✅ qeydiyyatdan keçibsə
-  window.location.href = "account.html";
+  // GitHub Pages üçün DÜZGÜN yol
+  window.location.href = "https://typingmasteraz.github.io/ayda/account.html";
 });
+
 
 
 
