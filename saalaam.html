@@ -364,7 +364,8 @@ settingBtn.addEventListener("click", (e) => {
 document.addEventListener("click", (e) => {
   if (
     !e.target.closest(".account-wrapper") &&
-    !e.target.closest("#accountMenu")
+    !e.target.closest("#accountMenu") &&
+    !e.target.closest("#accountInfoBtn")
   ) {
     accountMenu.classList.remove("active");
   }
@@ -376,6 +377,7 @@ document.addEventListener("click", (e) => {
     settingsMenu.classList.remove("active");
   }
 });
+
 
 /* ===================== STATE ===================== */
 let settings = { count: parseInt(el('wordCount')?.value || 30) };
