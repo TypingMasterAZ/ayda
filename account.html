@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hesab Məlumatları</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Poppins, Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: #020617;
+      padding: 30px;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 20px 40px rgba(0,0,0,.5);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 22px;
+      text-align: center;
+    }
+
+    .info {
+      margin: 20px 0;
+      background: #020617;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #1e293b;
+    }
+
+    .label {
+      color: #94a3b8;
+      font-size: 13px;
+    }
+
+    .value {
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 4px;
+      word-break: break-all;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .logout {
+      background: #dc2626;
+      color: #fff;
+    }
+
+    .back {
+      background: #2563eb;
+      color: #fff;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Hesab Məlumatları</h1>
+
+    <div class="info">
+      <div class="label">Email</div>
+      <div class="value" id="emailText">—</div>
+    </div>
+
+    <div class="info">
+      <div class="label">İstifadəçi adı</div>
+      <div class="value" id="usernameText">—</div>
+    </div>
+
+    <button class="logout" id="logoutBtn">Çıxış (Logout)</button>
+    <button class="back" onclick="window.location.href='index.html'">
+      Əsas səhifəyə qayıt
+    </button>
+  </div>
+
+  <script>
+    const email = localStorage.getItem("userEmail");
+
+    // 🔒 Qeydiyyat yoxdursa → geri qaytar
+    if (!email) {
+      window.location.href = "index.html";
+    }
+
+    const username = email.split("@")[0];
+
+    document.getElementById("emailText").textContent = email;
+    document.getElementById("usernameText").textContent = username;
+
+    // 🚪 Logout
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("userEmail");
+      window.location.href = "index.html";
+    });
+  </script>
+
+</body>
+</html>
