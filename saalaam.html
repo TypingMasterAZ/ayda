@@ -561,10 +561,23 @@ document.getElementById("logoutBtn")?.addEventListener("click", function (e) {
   localStorage.removeItem("userEmail");
   window.location.reload();
 });
+window.addEventListener("DOMContentLoaded", () => {
+  const savedEmail = localStorage.getItem("userEmail");
+  console.log("EMAIL:", savedEmail);
+
+  if (savedEmail) {
+    const username = savedEmail.split("@")[0];
+    const accountBtn = document.getElementById("accountBtn");
+
+    if (accountBtn) {
+      accountBtn.textContent = username;
+    }
+  }
+});
+
 
 
 </script>
 
 </body>
 </html>
-
