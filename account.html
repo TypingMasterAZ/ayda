@@ -91,7 +91,7 @@
     </div>
 
     <button class="logout" id="logoutBtn">Çıxış (Logout)</button>
-    <button class="back" onclick="window.location.href='index.html'">
+    <button class="back" onclick="window.location.href='https://typingmasteraz.github.io/ayda/saalaam.html'">
       Əsas səhifəyə qayıt
     </button>
   </div>
@@ -99,12 +99,8 @@
   <script>
     const email = localStorage.getItem("userEmail");
 
-    // 🔒 Qeydiyyat yoxdursa → geri qaytar
-    if (!email) {
-      window.location.href = "index.html";
-    }
-
-    const username = email.split("@")[0];
+   
+    const username = email.split('@')[0];
 
     document.getElementById("emailText").textContent = email;
     document.getElementById("usernameText").textContent = username;
@@ -112,7 +108,7 @@
     // 🚪 Logout
     document.getElementById("logoutBtn").addEventListener("click", () => {
       localStorage.removeItem("userEmail");
-      window.location.href = "index.html";
+      window.location.href = "https://typingmasteraz.github.io/ayda/qeydiyyat.html";
     });
   </script>
 
