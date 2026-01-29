@@ -125,7 +125,7 @@
     <button class="edit" id="editBtn">Redaktə et</button>
     <button class="save" id="saveBtn">Yadda saxla</button>
 
-    <button class="back" onclick="window.location.href='https://typingmasteraz.github.io/ayda/saalaam.html'">
+    <button class="back" onclick="window.location.href='saalaam.html'">
       Davam et
     </button>
 
@@ -134,81 +134,96 @@
     </button>
   </div>
 
-  <script>
-    const nameText = document.getElementById("nameText");
-    const surnameText = document.getElementById("surnameText");
-    const nameInput = document.getElementById("nameInput");
-    const surnameInput = document.getElementById("surnameInput");
-    const editBtn = document.getElementById("editBtn");
-    const saveBtn = document.getElementById("saveBtn");
+ <script>
+  const nameText = document.getElementById("nameText");
+  const surnameText = document.getElementById("surnameText");
+  const nameInput = document.getElementById("nameInput");
+  const surnameInput = document.getElementById("surnameInput");
+  const editBtn = document.getElementById("editBtn");
+  const saveBtn = document.getElementById("saveBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
 
-    let name = localStorage.getItem("userName");
-    let surname = localStorage.getItem("userSurname");
+  // 1) Login email yoxlanır
+  const email = localStorage.getItem("loggedInEmail");
+  if (!email) {
+    window.location.href = "login.html";
+  }
 
-    nameText.textContent = name || "Məlumat yoxdur";
-    surnameText.textContent = surname || "Məlumat yoxdur";
+  // 2) Email-ə bağlı məlumat oxunur
+  function getUserData() {
+    const raw = localStorage.getItem("userData_" + email);
+    return raw ? JSON.parse(raw) : null;
+  }
 
-    // ✏️ Edit rejimi
-    editBtn.addEventListener("click", () => {
-      nameInput.value = name || "";
-      surnameInput.value = surname || "";
+  function renderViewMode(userData) {
+    nameText.textContent = userData?.name || "Məlumat yoxdur";
+    surnameText.textContent = userData?.surname || "Məlumat yoxdur";
 
-      nameText.style.display = "none";
-      surnameText.style.display = "none";
+    nameText.style.display = "block";
+    surnameText.style.display = "block";
+    nameInput.style.display = "none";
+    surnameInput.style.display = "none";
 
-      nameInput.style.display = "block";
-      surnameInput.style.display = "block";
+    editBtn.style.display = "block";
+    saveBtn.style.display = "none";
+  }
 
-      editBtn.style.display = "none";
-      saveBtn.style.display = "block";
-    });
+  function renderEditMode(userData) {
+    nameInput.value = userData?.name || "";
+    surnameInput.value = userData?.surname || "";
 
-    // 💾 Save
-    saveBtn.addEventListener("click", () => {
-      name = nameInput.value.trim();
-      surname = surnameInput.value.trim();
+    nameText.style.display = "none";
+    surnameText.style.display = "none";
+    nameInput.style.display = "block";
+    surnameInput.style.display = "block";
 
-      localStorage.setItem("userName", name);
-      localStorage.setItem("userSurname", surname);
+    editBtn.style.display = "none";
+    saveBtn.style.display = "block";
+  }
 
-      nameText.textContent = name;
-      surnameText.textContent = surname;
+  // 3) Əgər məlumat yoxdursa → adiviyaz.html (səndə bu səhifə adiviyaz idi)
+  let userData = getUserData();
+  if (!userData) {
+    window.location.href = "adiviyaz.html";
+  }
 
-      nameInput.style.display = "none";
-      surnameInput.style.display = "none";
+  // 4) Səhifə açılan kimi məlumatı göstər
+  renderViewMode(userData);
 
-      nameText.style.display = "block";
-      surnameText.style.display = "block";
+  // ✏️ Edit
+  editBtn.addEventListener("click", () => {
+    userData = getUserData();
+    renderEditMode(userData);
+  });
 
-      saveBtn.style.display = "none";
-      editBtn.style.display = "block";
+  // 💾 Save (yenilə)
+  saveBtn.addEventListener("click", () => {
+    const newName = nameInput.value.trim();
+    const newSurname = surnameInput.value.trim();
 
-      alert("Məlumatlar yeniləndi ✅");
-    });
+    if (!newName || !newSurname) {
+      alert("Ad və soyad boş ola bilməz!");
+      return;
+    }
 
-    // 🚪 Sil
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-  localStorage.removeItem("userName");
-  localStorage.removeItem("userSurname");
+    const updated = { name: newName, surname: newSurname };
+    localStorage.setItem("userData_" + email, JSON.stringify(updated));
 
-  // Ekrandakı mətnləri təmizlə
-  nameText.textContent = "Məlumat yoxdur";
-  surnameText.textContent = "Məlumat yoxdur";
+    alert("Məlumatlar yeniləndi ✅");
 
-  // Inputları da təmizlə
-  nameInput.value = "";
-  surnameInput.value = "";
+    userData = updated;
+    renderViewMode(userData);
+  });
 
-  // Edit rejimini bağla
-  nameInput.style.display = "none";
-  surnameInput.style.display = "none";
-  saveBtn.style.display = "none";
-  editBtn.style.display = "block";
+  // 🗑️ Sil (logout / delete)
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("userData_" + email);
+    localStorage.removeItem("loggedInEmail");
 
-  alert("Məlumatlar silindi 🗑️");
-});
-
-  </script>
+    alert("Məlumatlar silindi 🗑️");
+    window.location.href = "login.html";
+  });
+</script>
 
 </body>
 </html>
