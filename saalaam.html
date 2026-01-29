@@ -9,11 +9,50 @@
   <style>
     :root{--bg1:#0f172a;--bg2:#07103a;--card:#0b1220;--accent:#7c3aed;--glass:rgba(255,255,255,0.04);--muted:rgba(255,255,255,0.6)}
     *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    /* AÇIQ REJİM (LIGHT MODE) */
+
+
+body.light .card,
+body.light .panel,
+body.light .modal-card {
+  background: #ffffff;
+  color: #0f172a;
+}
+
     html,body{height:100%;margin:0}
     body{
       background:linear-gradient(135deg,var(--bg1),var(--bg2));
-      color:#e6eef8;display:flex;align-items:center;justify-content:center;padding:32px;flex-direction: column;gap: 20px;overflow: hidden;
-    }
+  color:#e6eef8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:32px;
+  flex-direction: column;
+  gap: 20px;
+
+  overflow-y: auto;   /* ✅ AŞAĞI SCROLL AÇILDI */
+  overflow-x: hidden; /* yan sürüşmə olmasın */
+}
+    
+/* LIGHT MODE – card və panellər */
+body.light .card,
+body.light .typing-area,
+body.light .panel {
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+    /* AÇIQ REJİM (LIGHT MODE) */
+body.light {
+  --bg1: #f8fafc;
+  --bg2: #e5e7eb;
+  --card: #ffffff;
+  --accent: #7c3aed;
+  --glass: rgba(0,0,0,0.04);
+  --muted: rgba(0,0,0,0.6);
+  color: #0f172a;
+}
+
     .container{width:100%;max-width:980px}
 
     .card{
@@ -157,6 +196,8 @@
 position: relative;
 text-decoration:none ;
 margin-left: 280px;
+display:flex ;
+flex-direction: row;
 }
 .account-wrapper a{
   text-decoration: none;
@@ -203,15 +244,15 @@ margin-left: 280px;
   padding: 8px;
   width: 220px;
   display: none;
-  height: 100px;
+  height: 50px;
   flex-direction: column;
-  gap: 50px;
+  gap: 100px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
 .settings-menu.active{
   display: flex;
-  gap: 20px;
+  gap: 5px;
 }
 .settings-menu a{
   text-decoration:none ;
@@ -230,10 +271,18 @@ margin-left: 280px;
   border-radius: 10px;
   height: auto;
 }
+.hesabadi{
+  color: #e6eef8;
+  border-radius: 5px;
+  width: 220px;
+
+}
 
 
 
   </style>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
 </head>
 <body>
   <div class="container">
@@ -248,19 +297,24 @@ margin-left: 280px;
   <a href="#" id="accountBtn">Hesab</a>
     <div class="ayarlar">
   <a href="#" id="settingBtn">Parametrlər</a>
-  </div>
+    </div>
+  
+  
+</div>
   
   
    <div class="account-menu" id="accountMenu">
     <a href="https://typingmasteraz.github.io/ayda/qeydiyyat.html">Qeydiyyat</a>
-    <a href="#" id="logoutMenutBtn">Hesabdan çıxış</a>
-    <a href="#" id="accountInfoBtn">Hesab Məlumatları</a>
+    <a href="https://typingmasteraz.github.io/ayda/qeydiyyat.html" id="logoutMenutBtn">Hesabdan çıxış</a>
+    <a href="account.html" id="accountBtn">Hesab Məlumatları</a>
+  
   </div>
   <div class="settings-menu" id="settingsMenu">
-    <a href="#">Ən çox topladığın xal</a>
-    <a href="#">Ingilis dilində sözlər</a>
+    <a href="https://typingmasteraz.github.io/ayda/haqqimizda.html">Haqqımızda</a>
+    
   </div>
-</div>
+
+
 
 
           </div>
@@ -319,6 +373,7 @@ margin-left: 280px;
   </div>
 
   <!-- modal template -->
+
   <div id="modal" style="display:none" class="modal" role="dialog" aria-modal="true">
     <div class="modal-card">
       <h2>Nəticələr</h2>
@@ -327,7 +382,7 @@ margin-left: 280px;
       <div style="margin-top:14px;overflow:auto;max-height:260px;padding-right:8px" id="detailedResults"></div>
       <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
         <button id="closeModal">Yenidən</button>
-        <button class="ghost" id="downloadBtn">CSV kimi yüklə</button>
+        
       </div>
     </div>
        
@@ -339,6 +394,56 @@ margin-left: 280px;
   
 
  <script>
+  function renderDetailedResults(){
+  const box = document.getElementById("detailedResults");
+  box.innerHTML = "";
+
+  state.perWord.forEach((item, i) => {
+    if (!item) return;
+
+    const row = document.createElement("div");
+    row.style.display = "flex";
+    row.style.justifyContent = "space-between";
+    row.style.alignItems = "center";
+    row.style.padding = "8px 10px";
+    row.style.marginBottom = "6px";
+    row.style.borderRadius = "8px";
+    row.style.fontSize = "14px";
+
+    if (item.correct) {
+      row.style.background = "rgba(34,197,94,0.12)";
+      row.innerHTML = `
+        <span>${i+1}. ${item.word}</span>
+        <strong style="color:#22c55e">✔ düzgün</strong>
+      `;
+    } else {
+      row.style.background = "rgba(239,68,68,0.12)";
+      row.innerHTML = `
+        <span>${i+1}. ${item.word}</span>
+        <strong style="color:#ef4444">✖ səhv</strong>
+      `;
+    }
+
+    box.appendChild(row);
+  });
+    // 🔢 YEKUN STATİSTİKA
+  const summary = document.createElement("div");
+  summary.style.marginTop = "12px";
+  summary.style.paddingTop = "10px";
+  summary.style.borderTop = "1px solid rgba(255,255,255,0.08)";
+  summary.style.display = "flex";
+  summary.style.justifyContent = "space-between";
+  summary.style.fontWeight = "700";
+
+  summary.innerHTML = `
+    <span style="color:#22c55e">✔ Düzgün: ${state.correct}</span>
+    <span style="color:#ef4444">✖ Səhv: ${state.wrong}</span>
+  `;
+
+  box.appendChild(summary);
+
+}
+
 /* ===================== WORD LIST ===================== */
 const WORDS = (`salam salamlar komputer kitab internet proqramlaşdırma javascript html css dizayn sürət təcrübə yazmaq düzgün səhv oyun funksiya dəyişən massiv düzbucaqlı tənlik riyaziyyat tarix coğrafiya elm musiqi film sosial media kitabxana universitet alma bal su qapı pəncərə kitab çanta dost yol işıq ev oyun yaz gül dərs telefon kompüter şəkil masa saat məktəb müəllim təcrübə dəftər`).split(' ');
 
@@ -349,6 +454,7 @@ const accountBtn = document.getElementById("accountBtn");
 const accountMenu = document.getElementById("accountMenu");
 const settingBtn = document.getElementById("settingBtn");
 const settingsMenu = document.getElementById("settingsMenu");
+const hesabadi = document.getElementById("hesabadi")
 
 accountBtn.addEventListener("click", (e) => {
   e.preventDefault();
@@ -486,6 +592,7 @@ function finishTest(){
   state.finished = true;
   el('typingInput').disabled = true;
   stopTimer();
+  renderDetailedResults();
   showModal();
 }
 
@@ -574,7 +681,7 @@ function showNotification(text) {
 const savedEmail = localStorage.getItem("userEmail");
 
 const registerLink = document.querySelector('#accountMenu a[href*="qeydiyyat"]');
-const accountInfoBtn = document.getElementById("accountInfoBtn");
+
 const accountBtnTop = document.getElementById("accountBtn");
 
 if (savedEmail) {
@@ -583,20 +690,93 @@ if (savedEmail) {
   if (registerLink) registerLink.style.display = "none";
 }
 
-accountInfoBtn.addEventListener("click", function (e) {
+
+/* ===================== REJİM DƏYİŞMƏ ===================== */
+const themeBtn = document.getElementById("themeToggle");
+
+/* əvvəlki seçimi oxu */
+if (localStorage.getItem("theme") === "light") {
+  document.body.classList.add("light");
+}
+
+themeBtn.addEventListener("click", (e) => {
   e.preventDefault();
-  e.stopPropagation();
 
-  const emailNow = localStorage.getItem("userEmail");
+  document.body.classList.toggle("light");
 
-  if (!emailNow) {
-    showNotification("❗ Qeydiyyatdan keçməmisiniz");
-    return;
+  if (document.body.classList.contains("light")) {
+    localStorage.setItem("theme", "light");
+  } else {
+    localStorage.setItem("theme", "dark");
   }
-
-  window.location.href =
-    "https://typingmasteraz.github.io/ayda/account.html";
 });
+document.getElementById("downloadBtn").addEventListener("click", () => {
+  const data = [];
+
+  // başlıq sətri
+  data.push(["#", "Düzgün söz", "Yazılan", "Nəticə"]);
+
+  state.perWord.forEach((item, i) => {
+    if (!item) return;
+
+    data.push([
+      i + 1,
+      item.word,
+      item.typed,
+      item.correct ? "Düzgün" : "Səhv"
+    ]);
+  });
+
+  // Excel sheet yarat
+  const worksheet = XLSX.utils.aoa_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Nəticələr");
+
+  // faylı yüklə
+  document.getElementById("downloadBtn").addEventListener("click", () => {
+  const data = [];
+
+  // başlıq
+  data.push(["#", "Düzgün söz", "Yazılan", "Nəticə"]);
+
+  state.perWord.forEach((item, i) => {
+    if (!item) return;
+    data.push([
+      i + 1,
+      item.word,
+      item.typed,
+      item.correct ? "Düzgün" : "Səhv"
+    ]);
+  });
+
+  const worksheet = XLSX.utils.aoa_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Nəticələr");
+
+  // ✅ BURA ƏSAS HƏLLDİR
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "array"
+  });
+
+  const blob = new Blob([excelBuffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  });
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "typingmaster-neticeler.xlsx";
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+});
+
+});
+
+
+
 </script>
 
 
