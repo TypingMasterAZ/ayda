@@ -140,6 +140,26 @@ textarea, #codeInput, #emailInput {
 .resend-text{
     cursor: pointer;
 }
+.otp-box{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.otp-input{
+    width: 55px;
+    height: 55px;
+    border-radius: 16px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    border: 3px solid #4285f4;
+    box-shadow: 0 0 0 5px rgba(56, 133, 244, 0.25);
+    outline: none;
+    font-family: 'Poppins';
+}
+
 </style>
 </head>
 <body>
@@ -149,10 +169,11 @@ textarea, #codeInput, #emailInput {
     <h3>TypinMaster</h3>
     <h5>"Typing Skills Just Got Better"</h5>
     </div>
-    <h1>Emailinizi Daxil edin:</h1>
+    
   
 
     <div id="emailSection">
+        <h1>Emailinizi Daxil edin:</h1>
         <input type="email" id="emailInput" placeholder="Emailinizi daxil edin">
 
         <br>
@@ -165,10 +186,20 @@ textarea, #codeInput, #emailInput {
 
     <div id="codeSection">
         <h2>OTP Kodunu daxil edin:</h2>
-        <input type="text" id="codeInput" placeholder="Kod">
+        <div class="otp-box" id="otpBox">
+  <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+  <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+  <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+  <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+</div>
+
+<div id="timerText" style="margin-top:15px; font-size:18px; font-weight:600;"></div>
+
+
         <br>
         <button id="verifyBtn">Daxil ol</button>
         <div class="yenidenkod" id="resendCode"><h4>Kodu Yenidən Göndər</h4></div>
+<div class="yenidenkod" id="resendCode"><h4>Kodu Yenidən Göndər</h4></div>
 
         
     </div>
@@ -212,9 +243,9 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // 📧 EmailJS
-emailjs.init("xEfr4FxWCyZag9EgB");
-const serviceID = "service_4jeponl";
-const templateID = "template_03qfkuv";
+emailjs.init("57Dy9aY2JxE2QQ9dL");
+const serviceID = "service_v54lvys";
+const templateID = "template_fcigrcp";
 
 let generatedCode = "";
 let otpExpireTime = null;
@@ -243,23 +274,69 @@ document.getElementById("sendCodeBtn").addEventListener("click", async () => {
   }
 
   // 🔐 OTP yaradılır
-  generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+  generatedCode = Math.floor(1000+ Math.random() * 9000).toString();
 
   await emailjs.send(serviceID, templateID, {
     email: email,
     passcode: generatedCode,
-    time: "4 dəq"
+    time: "1 deq"
   });
 
   document.getElementById("emailSection").style.display = "none";
   document.getElementById("codeSection").style.display = "block";
+  document.getElementById("resendCode").style.display = "none";
 
-  otpExpireTime = Date.now() + 4 * 60 * 1000;
+  document.querySelectorAll(".otp-input").forEach(i => i.value = "");
+setTimeout(() => document.querySelectorAll(".otp-input")[0].focus(), 100);
+
+
+  otpExpireTime = Date.now() + 1 * 60 * 1000;
   startOtpTimer();
 });
+document.getElementById("resendCode").addEventListener("click", async () => {
+  const email = document.getElementById("emailInput").value.trim();
+  if (!email) return;
+
+  // ✅ yeni OTP yaradılır
+  generatedCode = Math.floor(1000 + Math.random() * 9000).toString();
+
+  try {
+    // ✅ emailə göndərilir
+    await emailjs.send(serviceID, templateID, {
+      email: email,
+      passcode: generatedCode,
+      time: "1 dəq"
+    });
+
+    // ✅ inputlar təmizlənir və açılır
+    document.querySelectorAll(".otp-input").forEach(i => {
+      i.value = "";
+      i.disabled = false;
+    });
+    setTimeout(() => document.querySelectorAll(".otp-input")[0].focus(), 100);
+
+    // ✅ verify aktiv olur
+    document.getElementById("verifyBtn").disabled = false;
+
+    // ✅ resend yenə gizlənir
+    document.getElementById("resendCode").style.display = "none";
+
+    // ✅ yeni vaxt başlayır
+    otpExpireTime = Date.now() + 1 * 60 * 1000;
+    startOtpTimer();
+
+    alert("Yeni OTP kod göndərildi ✅");
+  } catch (err) {
+    console.error(err);
+    alert("OTP göndərilmədi ❌");
+  }
+});
+
 
 document.getElementById("verifyBtn").addEventListener("click", () => {
-  const entered = document.getElementById("codeInput").value.trim();
+ const inputs = document.querySelectorAll(".otp-input");
+const entered = Array.from(inputs).map(i => i.value).join("");
+
 
   if (Date.now() > otpExpireTime) {
     alert("OTP vaxtı bitib!");
@@ -267,24 +344,59 @@ document.getElementById("verifyBtn").addEventListener("click", () => {
   }
 
   if (entered === generatedCode) {
-    alert("Doğrulama uğurludur!");
-    window.location.href = "saalaam.html";
+
+  // 1. Email-i inputdan götürürük
+  const email = document.getElementById("emailInput").value.trim();
+
+  // 2. Login olan email-i yadda saxlayırıq
+  localStorage.setItem("loggedInEmail", email);
+
+  // 3. Bu email üçün əvvəldən məlumat varmı?
+  const userKey = "userData_" + email;
+  const userExists = localStorage.getItem(userKey);
+
+  alert("Doğrulama uğurludur!");
+
+  // 4. Qərar veririk: hara getməlidir
+  if (userExists) {
+    // ƏVVƏLDƏN MƏLUMAT VAR
+    window.location.href = "https://typingmasteraz.github.io/ayda/account.html";
   } else {
-    alert("Kod səhvdir!");
+    // İLK DƏFƏDİR
+    window.location.href = "https://typingmasteraz.github.io/ayda/adiviyaz.html";
   }
+}
+
 });
 
 function startOtpTimer() {
-  const timerText = document.createElement("div");
-  timerText.style.marginTop = "15px";
-  document.getElementById("codeSection").appendChild(timerText);
+  const timerText = document.getElementById("timerText");
+  const inputs = document.querySelectorAll(".otp-input");
+  const verifyBtn = document.getElementById("verifyBtn");
+
+  // əvvəlki interval varsa dayandır
+  if (timerInterval) clearInterval(timerInterval);
+
+  // vaxt başlayanda inputlar aktiv olsun
+  inputs.forEach(i => i.disabled = false);
+  verifyBtn.disabled = false;
 
   timerInterval = setInterval(() => {
     const remaining = otpExpireTime - Date.now();
 
     if (remaining <= 0) {
       clearInterval(timerInterval);
+
       timerText.innerText = "⛔ Vaxt bitdi!";
+
+      // ✅ vaxt bitəndə inputlara yazmaq olmasın
+      inputs.forEach(i => i.disabled = true);
+
+      // ✅ yoxlama düyməsi də işləməsin
+      verifyBtn.disabled = true;
+      document.getElementById("resendCode").style.display = "block";
+
+
       return;
     }
 
@@ -293,6 +405,31 @@ function startOtpTimer() {
     timerText.innerText = `⏳ ${m}:${s.toString().padStart(2, "0")}`;
   }, 1000);
 }
+
+// ✅ OTP xanalarda auto-keçid və yalnız rəqəm
+document.addEventListener("input", (e) => {
+  if (!e.target.classList.contains("otp-input")) return;
+
+  e.target.value = e.target.value.replace(/\D/g, ""); // yalnız rəqəm
+  const inputs = [...document.querySelectorAll(".otp-input")];
+  const idx = inputs.indexOf(e.target);
+
+  if (e.target.value && idx < inputs.length - 1) {
+    inputs[idx + 1].focus();
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if (!e.target.classList.contains("otp-input")) return;
+
+  const inputs = [...document.querySelectorAll(".otp-input")];
+  const idx = inputs.indexOf(e.target);
+
+  if (e.key === "Backspace" && !e.target.value && idx > 0) {
+    inputs[idx - 1].focus();
+  }
+});
+
 </script>
 
 </body>
