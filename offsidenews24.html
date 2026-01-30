@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OffsideNews24 | Real-Time Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #39ff14;
+            --accent: #ff3e3e;
+            --bg: #050505;
+            --card: #121212;
+            --text: #f0f0f0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            line-height: 1.6;
+            overflow-x: hidden; /* Sağ tərəfə sürüşmənin qarşısını alır */
+        }
+
+        /* TƏCİLİ XƏBƏRLƏR */
+        .breaking-news-container {
+            background: #1a1a1a;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            height: 40px;
+            font-size: 12px;
+        }
+
+        .breaking-label {
+            background: var(--accent);
+            color: white;
+            padding: 0 15px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .ticker-wrapper { flex: 1; overflow: hidden; }
+        .ticker-text {
+            display: inline-block;
+            white-space: nowrap;
+            padding-left: 100%;
+            animation: ticker-scroll 35s linear infinite;
+            color: var(--primary);
+        }
+
+        @keyframes ticker-scroll {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* NAVİQASİYA - RESPONSIVE */
+        nav {
+            background: rgba(0,0,0,0.95);
+            padding: 10px 5%;
+            display: flex;
+            flex-direction: column; /* Mobildə alt-alta */
+            align-items: center;
+            border-bottom: 2px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            gap: 10px;
+        }
+
+        @media (min-width: 768px) {
+            nav { flex-direction: row; justify-content: space-between; padding: 15px 5%; }
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 900; cursor: pointer; }
+        .logo span { color: var(--primary); }
+
+        .nav-links { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 5px; 
+        }
+
+        .nav-links button {
+            background: none; border: none; color: #ccc; 
+            cursor: pointer; font-weight: 600; text-transform: uppercase;
+            padding: 6px 10px; font-size: 11px;
+            transition: 0.3s;
+        }
+
+        @media (min-width: 768px) {
+            .nav-links button { font-size: 13px; padding: 8px 12px; }
+            .logo { font-size: 1.8rem; }
+        }
+
+        .nav-links button.active { color: var(--primary); background: rgba(57, 255, 20, 0.1); border-radius: 5px; }
+        .live-btn { background: var(--accent) !important; color: white !important; border-radius: 5px; animation: pulse 1.5s infinite; }
+
+        /* KONTENT */
+        .container { padding: 15px 5%; min-height: 70vh; }
+        .section-title { border-left: 4px solid var(--primary); padding-left: 10px; margin: 20px 0; font-size: 1.2rem; }
+
+        /* XƏBƏR GRİDİ - RESPONSIVE */
+        .news-grid { 
+            display: grid; 
+            grid-template-columns: 1fr; /* Mobildə tək sütun */
+            gap: 20px; 
+        }
+
+        @media (min-width: 600px) { grid-template-columns: repeat(2, 1fr); } /* Planşet */
+        @media (min-width: 1024px) { .news-grid { grid-template-columns: repeat(3, 1fr); } } /* Kompüter */
+
+        .card { background: var(--card); border-radius: 15px; overflow: hidden; border: 1px solid #222; }
+        .card img { width: 100%; height: 180px; object-fit: cover; }
+        .card-info { padding: 15px; }
+
+        /* CANLI BÖLMƏ */
+        #live-view { display: none; }
+        .coming-soon-box {
+            text-align: center;
+            padding: 40px 15px;
+            border: 2px dashed #333;
+            border-radius: 20px;
+            background: rgba(18, 18, 18, 0.5);
+        }
+
+        .coming-soon-box h1 { font-size: 1.5rem; }
+
+        /* DETAL SƏHİFƏSİ */
+        #detail-view { display: none; max-width: 800px; margin: 20px auto; padding: 0 10px; }
+        .full-img { width: 100%; border-radius: 15px; margin-bottom: 15px; }
+
+        footer { text-align: center; padding: 30px; border-top: 1px solid #222; color: #555; font-size: 10px; margin-top: 30px; }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { box-shadow: 0 0 10px var(--accent); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+<div class="breaking-news-container">
+    <div class="breaking-label">TƏCİLİ</div>
+    <div class="ticker-wrapper">
+        <div class="ticker-text">
+            +++ Qarabağın kapitanı Abdullah Zoubir: Play-off-da ilk rəqib kimi PSG ilə qarşılaşmaq istəyərdim. +++ Luis Enrique: Çox yorulmuşuq Qarabağ səfəri bizim üçün daha sərfəli olacaq. +++
+        </div>
+    </div>
+</div>
+
+<nav>
+    <div class="logo" onclick="window.location.reload()">OFFSIDE<span>24</span></div>
+    <div class="nav-links">
+        <button onclick="changeTab('news', 'all')" id="btn-all" class="active">Ana Səhifə</button>
+        <button onclick="changeTab('news', 'local')" id="btn-local">Yerli</button>
+        <button onclick="changeTab('news', 'foreign')" id="btn-foreign">Xarici</button>
+        <button onclick="changeTab('live')" id="btn-live" class="live-btn">🔴 CANLI</button>
+    </div>
+</nav>
+
+<div class="container">
+    <div id="news-view">
+        <h2 class="section-title">Son Xəbərlər</h2>
+        <div class="news-grid" id="news-grid"></div>
+    </div>
+
+    <div id="live-view">
+        <h2 class="section-title">Canlı Qarşılaşmalar</h2>
+        <div class="coming-soon-box">
+            <h1>Yaxın Zamanda Aktiv Olacaq</h1>
+            <p style="color: #888; font-size: 0.9rem;">Canlı nəticələr və statistikalar hazırlanır.</p>
+            <div style="font-size: 2.5rem; margin-top: 20px; animation: pulse 2s infinite;">⏳</div>
+        </div>
+    </div>
+
+    <div id="detail-view">
+        <button style="color:var(--primary); background:none; border:1px solid var(--primary); padding:8px 15px; cursor:pointer; border-radius:5px; margin-bottom:20px;" onclick="changeTab('news', 'all')">← GERİ</button>
+        <div id="detail-content"></div>
+    </div>
+</div>
+
+<footer>
+    <p>OffsideNews24 &copy; 2026 | Bütün hüquqlar qorunur.</p>
+</footer>
+
+<script>
+    const allNews = [
+        { id: 0, cat: 'local', title: "Qarabağ Play-Off-da!", text: "Qarabağ komandası növbəti mərhələyə vəsiqə qazandı.", img: "https://img.sanishtech.com/u/3fab5ace2b81ea645541a36531d37e13.png" },
+        { id: 1, cat: 'local', title: "Bəhlul Mustafazadə transferi", text: "Qarabağ və Çin klubu arasında razılaşma əldə olunub!", img: "https://img.sanishtech.com/u/71aec0844bb241c4e015938bc91143ae.png" },
+        { id: 2, cat: 'foreign', title: "Potensial rəqiblərimiz", text: "PSG və Newcastle United komandalarıdır.", img: "https://img.sanishtech.com/u/7537bc00b22d40381f59024a84df8875.png" }
+    ];
+
+    function changeTab(tab, category = 'all') {
+        document.getElementById('news-view').style.display = tab === 'news' ? 'block' : 'none';
+        document.getElementById('live-view').style.display = tab === 'live' ? 'block' : 'none';
+        document.getElementById('detail-view').style.display = 'none';
+        document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+        
+        if (tab === 'live') {
+            document.getElementById('btn-live').classList.add('active');
+        } else {
+            document.getElementById('btn-' + category).classList.add('active');
+            renderGrid(category === 'all' ? allNews : allNews.filter(n => n.cat === category));
+        }
+        window.scrollTo(0,0);
+    }
+
+    function renderGrid(data) {
+        const grid = document.getElementById('news-grid');
+        grid.innerHTML = '';
+        data.forEach(n => {
+            grid.innerHTML += `
+                <div class="card" onclick="openNews(${n.id})">
+                    <img src="${n.img}">
+                    <div class="card-info">
+                        <span style="color:var(--primary); font-size:10px; font-weight:bold;">${n.cat.toUpperCase()}</span>
+                        <h3 style="font-size:1rem; margin:5px 0;">${n.title}</h3>
+                    </div>
+                </div>`;
+        });
+    }
+
+    function openNews(id) {
+        const n = allNews.find(x => x.id === id);
+        document.getElementById('news-view').style.display = 'none';
+        document.getElementById('detail-view').style.display = 'block';
+        document.getElementById('detail-content').innerHTML = `
+            <h2>${n.title}</h2>
+            <img src="${n.img}" class="full-img">
+            <p>${n.text}</p>
+        `;
+        window.scrollTo(0,0);
+    }
+
+    renderGrid(allNews);
+</script>
+</body>
+</html>
