@@ -324,6 +324,22 @@
 </footer>
 
 <script>
+    // Sayğac funksiyası - Səhifə yüklənən kimi işə düşür
+(function() {
+    // 1. Mövcud sayı götür və ya 0-dan başla
+    let count = localStorage.getItem('my_private_counter') || 0;
+    
+    // 2. Sayı 1 vahid artır
+    count = parseInt(count) + 1;
+    
+    // 3. Yeni sayı yadda saxla
+    localStorage.setItem('my_private_counter', count);
+
+    // 4. Konsolu təmizlə və nəticəni göstər
+    console.clear(); // Köhnə xətaları gizlətmək üçün
+    console.log("%c OFFSIDE24 ADMIN PANEL ", "background: #39ff14; color: #000; padding: 5px; font-weight: bold; border-radius: 4px;");
+    console.log("%c Ümumi daxilolma sayı: " + count, "color: #39ff14; font-size: 14px; font-family: sans-serif;");
+})();
     const allNews = [
         { id: 0, cat: 'yerli', date: '30 Yanvar, 2026', title: "🤯 Sterling “Qarabağ”da?!", text: "Məlumata görə Qarabağ FK Çempionlar Liqası planı üçün heyətini gücləndirmək istəyir və ⭐ Raheem Sterlingi 6 aylıq icarəyə götürmək variantını nəzərdən keçirir!", img: "https://img.sanishtech.com/u/fbff4f980d58c61acae4c668776e4cbc.png" },
         { id: 1, cat: 'yerli', date: '30 Yanvar, 2026', title: "Bəhlul Mustafazadə üçün Çindən Nəhəng Təklif", text: "Qarabağ və Çinin “Shenzhen Peng City” klubu arasında artıq razılaşma əldə olunub!", img: "https://img.sanishtech.com/u/57ff824c67ff81065cf7b4cf84fad8c0.png" },
