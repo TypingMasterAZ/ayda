@@ -3,44 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OffsideNews24 | Real-Time Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>OffsideNews24 | Premium Sports Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #39ff14;
+            --primary-dark: #2ecc10;
             --accent: #ff3e3e;
-            --bg: #050505;
-            --card: #121212;
-            --text: #f0f0f0;
+            --bg: #0a0a0a;
+            --card: #161616;
+            --text: #ffffff;
+            --text-dim: #a0a0a0;
+            --glass: rgba(255, 255, 255, 0.03);
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
             line-height: 1.6;
-            overflow-x: hidden; /* Sağ tərəfə sürüşmənin qarşısını alır */
+            overflow-x: hidden;
         }
 
         /* TƏCİLİ XƏBƏRLƏR */
         .breaking-news-container {
-            background: #1a1a1a;
-            border-bottom: 1px solid #333;
+            background: linear-gradient(90deg, #111, #1a1a1a);
+            border-bottom: 1px solid #222;
             display: flex;
             align-items: center;
-            height: 40px;
-            font-size: 12px;
+            height: 45px;
+            font-size: 13px;
+            position: relative;
+            z-index: 1001;
         }
 
         .breaking-label {
             background: var(--accent);
             color: white;
-            padding: 0 15px;
+            padding: 0 20px;
             height: 100%;
             display: flex;
             align-items: center;
-            font-weight: bold;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
             white-space: nowrap;
         }
 
@@ -49,8 +58,9 @@
             display: inline-block;
             white-space: nowrap;
             padding-left: 100%;
-            animation: ticker-scroll 35s linear infinite;
+            animation: ticker-scroll 30s linear infinite;
             color: var(--primary);
+            font-weight: 500;
         }
 
         @keyframes ticker-scroll {
@@ -58,169 +68,300 @@
             100% { transform: translate3d(-100%, 0, 0); }
         }
 
-        /* NAVİQASİYA - RESPONSIVE */
+        /* NAVİQASİYA */
         nav {
-            background: rgba(0,0,0,0.95);
-            padding: 10px 5%;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(15px);
+            padding: 15px 5%;
             display: flex;
-            flex-direction: column; /* Mobildə alt-alta */
+            flex-direction: column;
             align-items: center;
-            border-bottom: 2px solid var(--primary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: sticky;
             top: 0;
             z-index: 1000;
-            gap: 10px;
+            transition: 0.4s;
         }
 
         @media (min-width: 768px) {
-            nav { flex-direction: row; justify-content: space-between; padding: 15px 5%; }
+            nav { flex-direction: row; justify-content: space-between; height: 70px; }
         }
 
-        .logo { font-size: 1.5rem; font-weight: 900; cursor: pointer; }
-        .logo span { color: var(--primary); }
+        .logo { 
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.6rem; 
+            letter-spacing: -1px;
+            cursor: pointer;
+            background: linear-gradient(to right, #fff 50%, var(--primary) 50%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
+        /* MOBİL ÜÇÜN SÜRÜŞƏN MENYU DÜZƏLİŞİ */
         .nav-links { 
             display: flex; 
-            flex-wrap: wrap; 
-            justify-content: center; 
-            gap: 5px; 
+            gap: 10px; 
+            margin-top: 15px;
+            width: 100%;
+            justify-content: flex-start; /* Sürüşmə üçün sola yasladıq */
+            overflow-x: auto; /* Sağa-sola sürüşməni aktiv etdik */
+            padding-bottom: 8px;
+            scrollbar-width: none; /* Firefox üçün scroll gizlətmək */
+            -webkit-overflow-scrolling: touch; /* iOS üçün axıcı sürüşmə */
+        }
+        
+        .nav-links::-webkit-scrollbar { display: none; } /* Chrome/Safari scroll gizlət */
+
+        @media (min-width: 768px) { 
+            .nav-links { margin-top: 0; width: auto; overflow-x: visible; justify-content: center; padding-bottom: 0; } 
         }
 
         .nav-links button {
-            background: none; border: none; color: #ccc; 
-            cursor: pointer; font-weight: 600; text-transform: uppercase;
-            padding: 6px 10px; font-size: 11px;
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-dim);
+            cursor: pointer;
+            font-weight: 600;
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 8px;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap; /* Yazıların qırılmasını önləyir */
+            flex-shrink: 0; /* Düymələrin sıxılmasını önləyir */
+        }
+
+        .nav-links button:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .nav-links button.active { 
+            background: var(--primary); 
+            color: #000; 
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+        }
+
+        /* KONTENT STRUKTURU */
+        .container { padding: 30px 5%; min-height: 80vh; }
+        .section-title { 
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, #fff, #666);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+        }
+
+        @media (min-width: 768px) { .section-title { font-size: 1.8rem; } }
+
+        /* XƏBƏR GRİDİ */
+        .news-grid { 
+            display: grid; 
+            grid-template-columns: 1fr;
+            gap: 25px; 
+        }
+
+        @media (min-width: 650px) {
+            .news-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (min-width: 1000px) {
+            .news-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .card { 
+            background: var(--card); 
+            border-radius: 20px; 
+            overflow: hidden; 
+            border: 1px solid rgba(255,255,255,0.03);
+            transition: 0.4s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .card:hover { 
+            transform: translateY(-10px); 
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .card-img-wrapper { position: relative; height: 200px; overflow: hidden; }
+        .card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .card:hover img { transform: scale(1.1); }
+        .cat-badge {
+            position: absolute; top: 15px; left: 15px; padding: 4px 12px; border-radius: 50px;
+            font-size: 10px; font-weight: 800; text-transform: uppercase;
+            backdrop-filter: blur(5px); background: rgba(0,0,0,0.6); border: 1px solid var(--primary); color: var(--primary);
+        }
+        .card-info { padding: 20px; }
+        .card-info h3 { margin: 0; font-size: 1.1rem; line-height: 1.4; }
+
+        /* DETAL GÖRÜNÜŞÜ */
+        .detail-container { max-width: 800px; margin: 0 auto; }
+        .full-img { width: 100%; max-height: 500px; object-fit: cover; border-radius: 20px; margin: 20px 0; }
+
+        /* SOSİAL İKONLAR */
+        .share-section {
+            margin-top: 30px;
+            padding: 15px;
+            background: var(--glass);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #222;
+            color: white;
+            text-decoration: none;
             transition: 0.3s;
         }
 
-        @media (min-width: 768px) {
-            .nav-links button { font-size: 13px; padding: 8px 12px; }
-            .logo { font-size: 1.8rem; }
+        .share-btn:hover { background: var(--primary); color: #000; transform: scale(1.1); }
+
+        /* HAQQIMIZDA OPTİMİZASİYA */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            align-items: center;
+            animation: fadeIn 0.8s ease;
         }
+        @media (min-width: 992px) { .about-grid { grid-template-columns: 1.2fr 0.8fr; } }
 
-        .nav-links button.active { color: var(--primary); background: rgba(57, 255, 20, 0.1); border-radius: 5px; }
-        .live-btn { background: var(--accent) !important; color: white !important; border-radius: 5px; animation: pulse 1.5s infinite; }
-
-        /* KONTENT */
-        .container { padding: 15px 5%; min-height: 70vh; }
-        .section-title { border-left: 4px solid var(--primary); padding-left: 10px; margin: 20px 0; font-size: 1.2rem; }
-
-        /* XƏBƏR GRİDİ - RESPONSIVE */
-        .news-grid { 
-            display: grid; 
-            grid-template-columns: 1fr; /* Mobildə tək sütun */
-            gap: 20px; 
-        }
-
-        @media (min-width: 600px) { grid-template-columns: repeat(2, 1fr); } /* Planşet */
-        @media (min-width: 1024px) { .news-grid { grid-template-columns: repeat(3, 1fr); } } /* Kompüter */
-
-        .card { background: var(--card); border-radius: 15px; overflow: hidden; border: 1px solid #222; }
-        .card img { width: 100%; height: 180px; object-fit: cover; }
-        .card-info { padding: 15px; }
-
-        /* CANLI BÖLMƏ */
-        #live-view { display: none; }
-        .coming-soon-box {
-            text-align: center;
-            padding: 40px 15px;
-            border: 2px dashed #333;
+        .about-image {
+            width: 100%;
+            max-width: 320px;
             border-radius: 20px;
-            background: rgba(18, 18, 18, 0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: block;
+            margin: 0 auto;
         }
 
-        .coming-soon-box h1 { font-size: 1.5rem; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* DETAL SƏHİFƏSİ */
-        #detail-view { display: none; max-width: 800px; margin: 20px auto; padding: 0 10px; }
-        .full-img { width: 100%; border-radius: 15px; margin-bottom: 15px; }
-
-        footer { text-align: center; padding: 30px; border-top: 1px solid #222; color: #555; font-size: 10px; margin-top: 30px; }
-
-        @keyframes pulse { 0% { transform: scale(1); } 50% { box-shadow: 0 0 10px var(--accent); } 100% { transform: scale(1); } }
+        footer { 
+            text-align: center; padding: 40px 20px; border-top: 1px solid #111; 
+            color: #444; font-size: 12px; background: #050505;
+        }
+        .footer-socials { display: flex; justify-content: center ;; gap: 20px; margin-bottom: 50px; }
+        .footer-socials a { color: var(--text-dim); font-size: 20px; transition: 0.3s;align-items: center;justify-content: center; }
+        .footer-socials a:hover { color: var(--primary); }
     </style>
 </head>
 <body>
 
 <div class="breaking-news-container">
-    <div class="breaking-label">TƏCİLİ</div>
+    <div class="breaking-label">Son Xəbər</div>
     <div class="ticker-wrapper">
         <div class="ticker-text">
-            +++ Qarabağın kapitanı Abdullah Zoubir: Play-off-da ilk rəqib kimi PSG ilə qarşılaşmaq istəyərdim. +++ Luis Enrique: Çox yorulmuşuq Qarabağ səfəri bizim üçün daha sərfəli olacaq. +++
+            Azərbaycan premyer liqası günün nəticələri:Qəbələ 3-2 İmişli,Karvan-Yevlax 0-2 Sumqayıt •⚡ Qarabağın kapitanı Abdullah Zoubir: "Play-off-da PSG ilə qarşılaşmaq bir xəyal olardı."
         </div>
     </div>
 </div>
 
-<nav>
-    <div class="logo" onclick="window.location.reload()">OFFSIDE<span>24</span></div>
+<nav id="mainNav">
+    <div class="logo" onclick="window.location.reload()">OFFSIDE24</div>
     <div class="nav-links">
         <button onclick="changeTab('news', 'all')" id="btn-all" class="active">Ana Səhifə</button>
-        <button onclick="changeTab('news', 'local')" id="btn-local">Yerli</button>
-        <button onclick="changeTab('news', 'foreign')" id="btn-foreign">Xarici</button>
-        <button onclick="changeTab('live')" id="btn-live" class="live-btn">🔴 CANLI</button>
+        <button onclick="changeTab('news', 'yerli')" id="btn-yerli">Yerli</button>
+        <button onclick="changeTab('news', 'xarici')" id="btn-xarici">Xarici</button>
+        <button onclick="changeTab('about')" id="btn-about">Haqqımızda</button>
+        <button onclick="changeTab('live')" id="btn-live">🔴 CANLI</button>
     </div>
 </nav>
 
 <div class="container">
     <div id="news-view">
-        <h2 class="section-title">Son Xəbərlər</h2>
+        <h2 class="section-title">Günün Manşeti</h2>
         <div class="news-grid" id="news-grid"></div>
     </div>
 
-    <div id="live-view">
-        <h2 class="section-title">Canlı Qarşılaşmalar</h2>
-        <div class="coming-soon-box">
-            <h1>Yaxın Zamanda Aktiv Olacaq</h1>
-            <p style="color: #888; font-size: 0.9rem;">Canlı nəticələr və statistikalar hazırlanır.</p>
-            <div style="font-size: 2.5rem; margin-top: 20px; animation: pulse 2s infinite;">⏳</div>
+    <div id="about-view" style="display:none;">
+        <div class="about-grid">
+            <div class="about-text-content">
+                <h2>BİZ KİMİK?</h2>
+                <p><b>OffsideNews24</b> 2026-cı ildə idmansevərlərin ən doğru və ən sürətli məlumat mənbəyi olmaq missiyası ilə qurulmuşdur.</p>
+                <div class="share-section">
+                    <span style="font-weight: bold;">Rəsmi Səhifələrimiz:</span>
+                    <a href="https://www.instagram.com/offsidenews24/" class="share-btn"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.threads.net/@offsidenews24" class="share-btn"><i class="fa-brands fa-threads"></i></a>
+                    <a href="https://www.tiktok.com/@offside1ootball" class="share-btn"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div>
+                <img src="https://img.sanishtech.com/u/4499221506f3859d03034723914be70a.png" class="about-image" alt="About">
+            </div>
         </div>
     </div>
 
-    <div id="detail-view">
-        <button style="color:var(--primary); background:none; border:1px solid var(--primary); padding:8px 15px; cursor:pointer; border-radius:5px; margin-bottom:20px;" onclick="changeTab('news', 'all')">← GERİ</button>
-        <div id="detail-content"></div>
+    <div id="live-view" style="display:none;">
+        <h2 class="section-title">Canlı Skorlar</h2>
+        <div style="text-align: center; padding: 100px 0;"><h3>STADİON HAZIRLANIR</h3></div>
+    </div>
+
+    <div id="detail-view" style="display:none;">
+        <div class="detail-container">
+            <button style="background:var(--glass); color:white; border:1px solid #333; padding:10px 25px; cursor:pointer; border-radius:12px; margin-bottom: 20px;" onclick="changeTab('news', 'all')">← GERİ QAYIT</button>
+            <div id="detail-content"></div>
+        </div>
     </div>
 </div>
 
 <footer>
-    <p>OffsideNews24 &copy; 2026 | Bütün hüquqlar qorunur.</p>
+    <div class="footer-socials">
+        <a href="https://www.instagram.com/offsidenews24/"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.threads.net/@offsidenews24"><i class="fa-brands fa-threads"></i></a>
+        <a href="https://www.tiktok.com/@offside1ootball"><i class="fab fa-tiktok"></i></a>
+        <a href="https://wa.me/994559833178"><i class="fab fa-whatsapp"></i></a>
+    </div>
+    <p>OffsideNews24 &copy; 2026 | Professional Sports Media Group</p>
 </footer>
 
 <script>
     const allNews = [
-        { id: 0, cat: 'local', title: "Qarabağ Play-Off-da!", text: "Qarabağ komandası növbəti mərhələyə vəsiqə qazandı.", img: "https://img.sanishtech.com/u/3fab5ace2b81ea645541a36531d37e13.png" },
-        { id: 1, cat: 'local', title: "Bəhlul Mustafazadə transferi", text: "Qarabağ və Çin klubu arasında razılaşma əldə olunub!", img: "https://img.sanishtech.com/u/71aec0844bb241c4e015938bc91143ae.png" },
-        { id: 2, cat: 'foreign', title: "Potensial rəqiblərimiz", text: "PSG və Newcastle United komandalarıdır.", img: "https://img.sanishtech.com/u/7537bc00b22d40381f59024a84df8875.png" }
+        { id: 0, cat: 'yerli', date: '30 Yanvar, 2026', title: "🤯 Sterling “Qarabağ”da?!", text: "Məlumata görə Qarabağ FK Çempionlar Liqası planı üçün heyətini gücləndirmək istəyir və ⭐ Raheem Sterlingi 6 aylıq icarəyə götürmək variantını nəzərdən keçirir!", img: "https://img.sanishtech.com/u/fbff4f980d58c61acae4c668776e4cbc.png" },
+        { id: 1, cat: 'yerli', date: '30 Yanvar, 2026', title: "Bəhlul Mustafazadə üçün Çindən Nəhəng Təklif", text: "Qarabağ və Çinin “Shenzhen Peng City” klubu arasında artıq razılaşma əldə olunub!", img: "https://img.sanishtech.com/u/57ff824c67ff81065cf7b4cf84fad8c0.png" },
+        { id: 2, cat: 'YERLI', date: '29 Yanvar, 2026', title: "🔥 QARABAĞIN PLAY-OFF RƏQİBİ BƏLLİ OLDU!", text: "🏆 Çempionlar Liqası play-off mərhələsində rəqibimiz Newcastle United!", img: "https://img.sanishtech.com/u/e3e82dabf9b79d40ae818c345fd226b9.png"},
     ];
 
     function changeTab(tab, category = 'all') {
-        document.getElementById('news-view').style.display = tab === 'news' ? 'block' : 'none';
-        document.getElementById('live-view').style.display = tab === 'live' ? 'block' : 'none';
-        document.getElementById('detail-view').style.display = 'none';
+        const views = ['news-view', 'live-view', 'about-view', 'detail-view'];
+        views.forEach(v => document.getElementById(v).style.display = 'none');
         document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
-        
-        if (tab === 'live') {
-            document.getElementById('btn-live').classList.add('active');
-        } else {
+
+        if (tab === 'news') {
+            document.getElementById('news-view').style.display = 'block';
             document.getElementById('btn-' + category).classList.add('active');
-            renderGrid(category === 'all' ? allNews : allNews.filter(n => n.cat === category));
+            renderGrid(category === 'all' ? allNews : allNews.filter(n => n.cat.toLowerCase() === category.toLowerCase()));
+        } else if (tab === 'live') {
+            document.getElementById('live-view').style.display = 'block';
+            document.getElementById('btn-live').classList.add('active');
+        } else if (tab === 'about') {
+            document.getElementById('about-view').style.display = 'block';
+            document.getElementById('btn-about').classList.add('active');
         }
-        window.scrollTo(0,0);
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function renderGrid(data) {
         const grid = document.getElementById('news-grid');
-        grid.innerHTML = '';
-        data.forEach(n => {
-            grid.innerHTML += `
-                <div class="card" onclick="openNews(${n.id})">
+        grid.innerHTML = data.map(n => `
+            <div class="card" onclick="openNews(${n.id})">
+                <div class="card-img-wrapper">
+                    <span class="cat-badge">${n.cat}</span>
                     <img src="${n.img}">
-                    <div class="card-info">
-                        <span style="color:var(--primary); font-size:10px; font-weight:bold;">${n.cat.toUpperCase()}</span>
-                        <h3 style="font-size:1rem; margin:5px 0;">${n.title}</h3>
-                    </div>
-                </div>`;
-        });
+                </div>
+                <div class="card-info">
+                    <div style="font-size: 11px; color: var(--primary); margin-bottom: 8px;">${n.date}</div>
+                    <h3>${n.title}</h3>
+                </div>
+            </div>`).join('');
     }
 
     function openNews(id) {
@@ -228,11 +369,17 @@
         document.getElementById('news-view').style.display = 'none';
         document.getElementById('detail-view').style.display = 'block';
         document.getElementById('detail-content').innerHTML = `
-            <h2>${n.title}</h2>
+            <h1>${n.title}</h1>
+            <div style="color:var(--text-dim); margin-bottom:20px;">📅 ${n.date} | 📂 ${n.cat.toUpperCase()}</div>
             <img src="${n.img}" class="full-img">
-            <p>${n.text}</p>
+            <p style="font-size:1.1rem; line-height:1.8;">${n.text}</p>
+            <div class="share-section">
+                <span>Paylaş:</span>
+                <a href="#" class="share-btn"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://www.threads.net/@offsidenews24" class="share-btn"><i class="fa-brands fa-threads"></i></a>
+            </div>
         `;
-        window.scrollTo(0,0);
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     renderGrid(allNews);
