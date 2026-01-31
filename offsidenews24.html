@@ -195,7 +195,16 @@
 
         /* DETAL GÖRÜNÜŞÜ */
         .detail-container { max-width: 800px; margin: 0 auto; }
-        .full-img { width: 100%; max-height: 500px; object-fit: cover; border-radius: 20px; margin: 20px 0; }
+        /* DETAL GÖRÜNÜŞÜNDƏKİ ŞƏKİL OPTİMİZASİYASI */
+.full-img { 
+    width: 100%; 
+    max-height: 70vh; /* Ekran hündürlüyünün 70%-ni keçməsin */
+    object-fit: contain; /* Şəkli kəsmir, hamısını göstərir */
+    background: #000; /* Şəkil incədirsə arxa fon qara görünsün */
+    border-radius: 20px; 
+    margin: 20px 0; 
+    display: block;
+}
 
         /* SOSİAL İKONLAR */
         .share-section {
@@ -260,7 +269,7 @@
     <div class="breaking-label">Son Xəbər</div>
     <div class="ticker-wrapper">
         <div class="ticker-text">
-            Azərbaycan premyer liqası günün nəticələri:Qəbələ 3-2 İmişli,Karvan-Yevlax 0-2 Sumqayıt •⚡ Qarabağın kapitanı Abdullah Zoubir: "Play-off-da PSG ilə qarşılaşmaq bir xəyal olardı."
+            Azərbaycan premyer liqası günün nəticələri:Qəbələ 3-2 İmişli,Karvan-Yevlax 0-2 Sumqayıt,Kəpəz 0-2 Şamaxı •⚡ Qarabağın kapitanı Abdullah Zoubir: "Play-off-da PSG ilə qarşılaşmaq bir xəyal olardı."
         </div>
     </div>
 </div>
@@ -366,7 +375,8 @@ updateGlobalCounter();
         { id: 1, cat: 'yerli', date: '30 Yanvar, 2026', title: "Bəhlul Mustafazadə üçün Çindən Nəhəng Təklif", text: "Qarabağ və Çinin “Shenzhen Peng City” klubu arasında artıq razılaşma əldə olunub!", img: "https://img.sanishtech.com/u/57ff824c67ff81065cf7b4cf84fad8c0.png" },
         { id: 2, cat: 'YERLI', date: '29 Yanvar, 2026', title: "🔥 QARABAĞIN PLAY-OFF RƏQİBİ BƏLLİ OLDU!", text: "🏆 Çempionlar Liqası play-off mərhələsində rəqibimiz Newcastle United!", img: "https://img.sanishtech.com/u/e3e82dabf9b79d40ae818c345fd226b9.png"},
         { id: 3, cat: 'YERLI', date: '31 Yanvar, 2026', title: " RƏSMİ: Alina Nəhmədova “Partizan”da! 🇦🇿🖤🤍", text: "Azərbaycan qadın millisinin üzvü Alina Nəhmədova karyerasını Serbiyanın nəhəng klubu “Partizan”da davam etdirəcək. ⚽️ Futbolçunun son klubu “Neftçi” olub. Yeni komandasına uğurlar! 💪🌟", img: "https://img.sanishtech.com/u/7aa441fedaf5a2b6e5180410f6e26518.jpg"},
-    ];
+        { id: 4, cat: 'YERLI', date: '31 Yanvar, 2026', title: "“Qarabağ”dan Leandro Andrade üçün QƏTİ QƏRAR!", text: "Klub rəhbərliyi futbolçunun qiymətini 3 milyon avro olaraq müəyyənləşdirib ✅ 📌 Bazarlıq da məhz 3 milyondan başlayacaq — bu məbləğdən aşağı gələn təkliflər isə heç nəzərə alınmayacaq. ⚽️ Futbolçunun özü yüksək təklif gəldiyi halda komandadan ayrılmaq istəyir, amma klubun qərarı qətidir:👉 Leandronun gedişinə yalnız ciddi məbləğ olarsa baxılacaq. 🔻 Onun buraxılmamasının əsas səbəbi isə son dönəmlərdəki performans enişidir — rəhbərlik daha ucuz satışa getmək istəmir.", img: "https://img.sanishtech.com/u/621eb34d8d1e4dc83d1b0c41dcf56553.png"},
+   ];
 
     function changeTab(tab, category = 'all') {
         const views = ['news-view', 'live-view', 'about-view', 'detail-view'];
