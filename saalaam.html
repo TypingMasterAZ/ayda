@@ -301,6 +301,10 @@ flex-direction: row;
   
   
 </div>
+<div id="adminStats" style="display:none; margin-top:10px; font-weight:600;">
+  👁️ Daxil olan istifadəçi sayı: <span id="visitorCount">0</span>
+</div>
+
   
   
    <div class="account-menu" id="accountMenu">
@@ -394,6 +398,8 @@ flex-direction: row;
   
 
  <script>
+  const ADMIN_EMAIL = "typingmaster.az@gmail.com"; // 🔴 BURA ÖZ EMAİLİNİ YAZ
+
   function renderDetailedResults(){
   const box = document.getElementById("detailedResults");
   box.innerHTML = "";
@@ -679,6 +685,22 @@ function showNotification(text) {
 
 /* ===================== AUTH LOGIC ===================== */
 const savedEmail = localStorage.getItem("userEmail");
+if (savedEmail) {
+  // əvvəl daxil olanlar siyahısı
+  let visitors = JSON.parse(localStorage.getItem("visitors") || "[]");
+
+  // əgər bu email əvvəllər yox idisə → yeni istifadəçi
+  if (!visitors.includes(savedEmail)) {
+    visitors.push(savedEmail);
+    localStorage.setItem("visitors", JSON.stringify(visitors));
+
+    // sayğacı artır
+    let count = parseInt(localStorage.getItem("visitorCount") || "0");
+    count++;
+    localStorage.setItem("visitorCount", count);
+  }
+}
+
 
 const registerLink = document.querySelector('#accountMenu a[href*="qeydiyyat"]');
 
@@ -774,6 +796,33 @@ document.getElementById("downloadBtn").addEventListener("click", () => {
 });
 
 });
+if (savedEmail === ADMIN_EMAIL) {
+  const count = localStorage.getItem("visitorCount") || "0";
+
+  document.getElementById("visitorCount").textContent = count;
+  document.getElementById("adminStats").style.display = "block";
+}
+
+
+const logoutBtn = document.getElementById("logoutMenutBtn");
+
+logoutBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  // 🔥 BÜTÜN HESAB MƏLUMATLARINI SİL
+  localStorage.removeItem("userEmail");
+  localStorage.removeItem("theme");
+  localStorage.removeItem("username");
+  // əgər başqa saxladıqların varsa, bura əlavə et
+
+  // və ya HAMISINI silmək üçün:
+  // localStorage.clear();
+
+  // səhifəni qeydiyyata yönləndir
+  window.location.href = "https://typingmasteraz.github.io/ayda/qeydiyyat.html";
+});
+
+
 
 
 
