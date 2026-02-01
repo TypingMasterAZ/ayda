@@ -135,6 +135,14 @@
   </div>
 
  <script>
+  
+  const ADMIN_EMAIL = "typingmaster@gmail.com"; // 🔴 BURAYA ÖZ EMAİLİNİ YAZ
+  const email = localStorage.getItem("loggedInEmail");
+
+  if (!email) {
+    window.location.href = "daxil ol.html";
+  }
+
   const nameText = document.getElementById("nameText");
   const surnameText = document.getElementById("surnameText");
   const nameInput = document.getElementById("nameInput");
