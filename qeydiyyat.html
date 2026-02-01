@@ -113,6 +113,7 @@ h4{
 
 
 
+
   </style>
 
   <!-- Firebase CDN -->
@@ -170,7 +171,8 @@ window.googleLogin = async function () {
     });
 
     alert("Qeydiyyat uğurla tamamlandı!");
-    window.location.href = "https://typingmasteraz.github.io/ayda/saalaam.html";
+    localStorage.setItem("loggedInEmail", email);
+    window.location.href = "https://typingmasteraz.github.io/ayda/adiviyaz.html";
 
   } catch (error) {
     console.error(error);
@@ -197,5 +199,51 @@ window.googleLogin = async function () {
 <div class="picture">
   <img src="https://cdn.mos.cms.futurecdn.net/3kQCtpnfHoUq5cBsLqKTFk.jpg">
 </div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+import { getFirestore, doc, setDoc } 
+from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAjhmCJIZaLB3UmnOwm1NUqbIgvlmfQW2o",
+  authDomain: "typingmaster-185d7.firebaseapp.com",
+  projectId: "typingmaster-185d7",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.getElementById("saveBtn").addEventListener("click", async () => {
+  const name = document.getElementById("name").value.trim();
+  const surname = document.getElementById("surname").value.trim();
+  const email = localStorage.getItem("loggedInEmail");
+
+  if (!email) {
+    alert("Sessiya tapılmadı, yenidən daxil olun");
+    window.location.href = "daxil ol.html";
+    return;
+  }
+
+  if (!name || !surname) {
+    alert("Ad və soyad boş ola bilməz!");
+    return;
+  }
+
+  await setDoc(doc(db, "users", email), {
+    email,
+    name,
+    surname,
+    updatedAt: new Date()
+  }, { merge: true });
+
+  localStorage.setItem(
+    "userProfile_" + email,
+    JSON.stringify({ name, surname })
+  );
+
+  window.location.href = "https://typingmasteraz.github.io/ayda/account.html";
+});
+</script>
+
 </body>
 </html>
