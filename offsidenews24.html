@@ -3,436 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OffsideNews24 | Premium Sports Portal</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>My Apps Portfolio</title>
     <style>
         :root {
-            --primary: #39ff14;
-            --primary-dark: #2ecc10;
-            --accent: #ff3e3e;
-            --bg: #0a0a0a;
-            --card: #161616;
-            --text: #ffffff;
-            --text-dim: #a0a0a0;
-            --glass: rgba(255, 255, 255, 0.03);
+            --primary: #00f2fe;
+            --secondary: #4facfe;
+            --bg: #0f172a;
+            --card-bg: rgba(255, 255, 255, 0.05);
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* TƏCİLİ XƏBƏRLƏR */
-        .breaking-news-container {
-            background: linear-gradient(90deg, #111, #1a1a1a);
-            border-bottom: 1px solid #222;
-            display: flex;
-            align-items: center;
-            height: 45px;
-            font-size: 13px;
-            position: relative;
-            z-index: 1001;
-        }
-
-        .breaking-label {
-            background: var(--accent);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
             color: white;
-            padding: 0 20px;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
-            white-space: nowrap;
-        }
-
-        .ticker-wrapper { flex: 1; overflow: hidden; }
-        .ticker-text {
-            display: inline-block;
-            white-space: nowrap;
-            padding-left: 100%;
-            animation: ticker-scroll 30s linear infinite;
-            color: var(--primary);
-            font-weight: 500;
-        }
-
-        @keyframes ticker-scroll {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-100%, 0, 0); }
-        }
-
-        /* NAVİQASİYA */
-        nav {
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(15px);
-            padding: 15px 5%;
+            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            transition: 0.4s;
+            min-height: 100vh;
         }
 
-        @media (min-width: 768px) {
-            nav { flex-direction: row; justify-content: space-between; height: 70px; }
+        header {
+            padding: 50px 20px;
+            text-align: center;
         }
 
-        .logo { 
-            font-family: 'Syncopate', sans-serif;
-            font-size: 1.6rem; 
-            letter-spacing: -1px;
-            cursor: pointer;
-            background: linear-gradient(to right, #fff 50%, var(--primary) 50%);
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
         }
 
-        /* MOBİL ÜÇÜN SÜRÜŞƏN MENYU DÜZƏLİŞİ */
-        .nav-links { 
-            display: flex; 
-            gap: 10px; 
-            margin-top: 15px;
-            width: 100%;
-            justify-content: flex-start; /* Sürüşmə üçün sola yasladıq */
-            overflow-x: auto; /* Sağa-sola sürüşməni aktiv etdik */
-            padding-bottom: 8px;
-            scrollbar-width: none; /* Firefox üçün scroll gizlətmək */
-            -webkit-overflow-scrolling: touch; /* iOS üçün axıcı sürüşmə */
-        }
-        
-        .nav-links::-webkit-scrollbar { display: none; } /* Chrome/Safari scroll gizlət */
-
-        @media (min-width: 768px) { 
-            .nav-links { margin-top: 0; width: auto; overflow-x: visible; justify-content: center; padding-bottom: 0; } 
-        }
-
-        .nav-links button {
-            background: var(--glass);
-            border: 1px solid rgba(255,255,255,0.05);
-            color: var(--text-dim);
-            cursor: pointer;
-            font-weight: 600;
-            padding: 8px 16px;
-            font-size: 12px;
-            border-radius: 8px;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            white-space: nowrap; /* Yazıların qırılmasını önləyir */
-            flex-shrink: 0; /* Düymələrin sıxılmasını önləyir */
-        }
-
-        .nav-links button:hover { background: rgba(255,255,255,0.1); color: #fff; }
-        .nav-links button.active { 
-            background: var(--primary); 
-            color: #000; 
-            box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
-        }
-
-        /* KONTENT STRUKTURU */
-        .container { padding: 30px 5%; min-height: 80vh; }
-        .section-title { 
-            font-size: 1.5rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            background: linear-gradient(to bottom, #fff, #666);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 30px;
-        }
-
-        @media (min-width: 768px) { .section-title { font-size: 1.8rem; } }
-
-        /* XƏBƏR GRİDİ */
-        .news-grid { 
-            display: grid; 
-            grid-template-columns: 1fr;
-            gap: 25px; 
-        }
-
-        @media (min-width: 650px) {
-            .news-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media (min-width: 1000px) {
-            .news-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-
-        .card { 
-            background: var(--card); 
-            border-radius: 20px; 
-            overflow: hidden; 
-            border: 1px solid rgba(255,255,255,0.03);
-            transition: 0.4s;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .card:hover { 
-            transform: translateY(-10px); 
-            border-color: var(--primary);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-
-        .card-img-wrapper { position: relative; height: 200px; overflow: hidden; }
-        .card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .card:hover img { transform: scale(1.1); }
-        .cat-badge {
-            position: absolute; top: 15px; left: 15px; padding: 4px 12px; border-radius: 50px;
-            font-size: 10px; font-weight: 800; text-transform: uppercase;
-            backdrop-filter: blur(5px); background: rgba(0,0,0,0.6); border: 1px solid var(--primary); color: var(--primary);
-        }
-        .card-info { padding: 20px; }
-        .card-info h3 { margin: 0; font-size: 1.1rem; line-height: 1.4; }
-
-        /* DETAL GÖRÜNÜŞÜ */
-        .detail-container { max-width: 800px; margin: 0 auto; }
-        /* DETAL GÖRÜNÜŞÜNDƏKİ ŞƏKİL OPTİMİZASİYASI */
-.full-img { 
-    width: 100%; 
-    max-height: 70vh; /* Ekran hündürlüyünün 70%-ni keçməsin */
-    object-fit: contain; /* Şəkli kəsmir, hamısını göstərir */
-    background: #000; /* Şəkil incədirsə arxa fon qara görünsün */
-    border-radius: 20px; 
-    margin: 20px 0; 
-    display: block;
-}
-
-        /* SOSİAL İKONLAR */
-        .share-section {
-            margin-top: 30px;
-            padding: 15px;
-            background: var(--glass);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .share-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #222;
-            color: white;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-
-        .share-btn:hover { background: var(--primary); color: #000; transform: scale(1.1); }
-
-        /* HAQQIMIZDA OPTİMİZASİYA */
-        .about-grid {
+        .container {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-            align-items: center;
-            animation: fadeIn 0.8s ease;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            width: 90%;
+            max-width: 1100px;
+            padding-bottom: 50px;
         }
-        @media (min-width: 992px) { .about-grid { grid-template-columns: 1.2fr 0.8fr; } }
 
-        .about-image {
-            width: 100%;
-            max-width: 320px;
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+            border-color: var(--primary);
+        }
+
+        .icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        h3 { margin: 15px 0; font-size: 1.5rem; }
+        
+        p { color: #94a3b8; line-height: 1.6; font-size: 0.95rem; }
+
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: #000;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: opacity 0.3s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4);
+        }
+
+        .version {
+            font-size: 0.8rem;
+            color: var(--secondary);
             display: block;
-            margin: 0 auto;
+            margin-bottom: 10px;
         }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        footer { 
-            text-align: center; padding: 40px 20px; border-top: 1px solid #111; 
-            color: #444; font-size: 12px; background: #050505;
-        }
-        .footer-socials { display: flex; justify-content: center ;; gap: 20px; margin-bottom: 50px; }
-        .footer-socials a { color: var(--text-dim); font-size: 20px; transition: 0.3s;align-items: center;justify-content: center; }
-        .footer-socials a:hover { color: var(--primary); }
     </style>
 </head>
 <body>
 
-<div class="breaking-news-container">
-    <div class="breaking-label">Son Xəbər</div>
-    <div class="ticker-wrapper">
-        <div class="ticker-text">
-            Azərbaycan premyer liqası günün nəticələri:Qəbələ 3-2 İmişli,Karvan-Yevlax 0-2 Sumqayıt,Kəpəz 0-2 Şamaxı , Qarabağ 1-0 Turan Tovuz •⚡ Qarabağın kapitanı Abdullah Zoubir: "Play-off-da PSG ilə qarşılaşmaq bir xəyal olardı."
+    <header>
+        <h1>Yaratdığımız Proqramlar</h1>
+        <p>Sürətli, etibarlı və tamamilə pulsuz alətlər.</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <div class="icon">⚽</div>
+            <span class="version">Versiya 2.4</span>
+            <h3>OFFSİDE24 LİVE</h3>
+            <p>Futbol oyunları hesablarını anında telefondan izləyin</p>
+            <a href="https://www.mediafire.com/file/khubhfogvlmmbnj/Offside24LIVE.apk/file" class="btn">YÜKLƏ (APK)</a>
         </div>
-    </div>
-</div>
 
-<nav id="mainNav">
-    <div class="logo" onclick="window.location.reload()">OFFSIDE24</div>
-    <div class="nav-links">
-        <button onclick="changeTab('news', 'all')" id="btn-all" class="active">Ana Səhifə</button>
-        <button onclick="changeTab('news', 'yerli')" id="btn-yerli">Yerli</button>
-        <button onclick="changeTab('news', 'xarici')" id="btn-xarici">Xarici</button>
-        <button onclick="changeTab('about')" id="btn-about">Haqqımızda</button>
-        <button onclick="changeTab('live')" id="btn-live">🔴 CANLI</button>
-    </div>
-</nav>
-
-<div class="container">
-    <div id="news-view">
-        <h2 class="section-title">Günün Manşeti</h2>
-        <div class="news-grid" id="news-grid"></div>
-    </div>
-
-    <div id="about-view" style="display:none;">
-        <div class="about-grid">
-            <div class="about-text-content">
-                <h2>BİZ KİMİK?</h2>
-                <p><b>OffsideNews24</b> 2026-cı ildə idmansevərlərin ən doğru və ən sürətli məlumat mənbəyi olmaq missiyası ilə qurulmuşdur.</p>
-                <div class="share-section">
-                    <span style="font-weight: bold;">Rəsmi Səhifələrimiz:</span>
-                    <a href="https://www.instagram.com/offsidenews24/" class="share-btn"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.threads.net/@offsidenews24" class="share-btn"><i class="fa-brands fa-threads"></i></a>
-                    <a href="https://www.tiktok.com/@offside1ootball" class="share-btn"><i class="fab fa-tiktok"></i></a>
-                </div>
-            </div>
-            <div>
-                <img src="https://img.sanishtech.com/u/4499221506f3859d03034723914be70a.png" class="about-image" alt="About">
-            </div>
-        </div>
-    </div>
-
-    <div id="live-view" style="display:none;">
-        <h2 class="section-title">Canlı Skorlar</h2>
-        <div style="text-align: center; padding: 100px 0;"><h3>STADİON HAZIRLANIR</h3></div>
-    </div>
-
-    <div id="detail-view" style="display:none;">
-        <div class="detail-container">
-            <button style="background:var(--glass); color:white; border:1px solid #333; padding:10px 25px; cursor:pointer; border-radius:12px; margin-bottom: 20px;" onclick="changeTab('news', 'all')">← GERİ QAYIT</button>
-            <div id="detail-content"></div>
-        </div>
-    </div>
-</div>
-
-<footer>
-    <div class="footer-socials">
-        <a href="https://www.instagram.com/offsidenews24/"><i class="fab fa-instagram"></i></a>
-        <a href="https://www.threads.net/@offsidenews24"><i class="fa-brands fa-threads"></i></a>
-        <a href="https://www.tiktok.com/@offside1ootball"><i class="fab fa-tiktok"></i></a>
-        <a href="https://wa.me/994559833178"><i class="fab fa-whatsapp"></i></a>
-    </div>
-    <p>OffsideNews24 &copy; 2026 | Professional Sports Media Group</p>
-</footer>
-
-<script>
-    // Qlobal Sayğac (Hər kəsi sayır)
-async function updateGlobalCounter() {
-    const name = "offside24_news_site"; // Saytın üçün unikal ad
-    try {
-        // Alternativ stabil API xidməti
-        const response = await fetch(`https://api.counterapi.dev/v1/${name}/visit/up`);
-        const data = await response.json();
         
-        // Konsolu təmizləyirik ki, xətalar görünməsin
-        console.clear();
         
-        // Məlumatı yalnız sən görəcəksən
-        console.log("%c OFFSIDE24 ADMIN PANEL ", "background: #39ff14; color: #000; font-weight: bold; padding: 5px;");
-        console.log("%c Ümumi Qlobal Ziyarətçi Sayı: " + data.count, "color: #39ff14; font-size: 14px;");
-    } catch (error) {
-        console.log("Statistika bazasına qoşulmaq mümkün olmadı.");
-    }
-}
+    </div>
 
-// Səhifə açılan kimi işə sal
-updateGlobalCounter();
-    // Sayğac funksiyası - Səhifə yüklənən kimi işə düşür
-(function() {
-    // 1. Mövcud sayı götür və ya 0-dan başla
-    let count = localStorage.getItem('my_private_counter') || 0;
-    
-    // 2. Sayı 1 vahid artır
-    count = parseInt(count) + 1;
-    
-    // 3. Yeni sayı yadda saxla
-    localStorage.setItem('my_private_counter', count);
-
-    // 4. Konsolu təmizlə və nəticəni göstər
-    console.clear(); // Köhnə xətaları gizlətmək üçün
-    console.log("%c OFFSIDE24 ADMIN PANEL ", "background: #39ff14; color: #000; padding: 5px; font-weight: bold; border-radius: 4px;");
-    console.log("%c Ümumi daxilolma sayı: " + count, "color: #39ff14; font-size: 14px; font-family: sans-serif;");
-})();
-    const allNews = [
-        { id: 0, cat: 'yerli', date: '30 Yanvar, 2026', title: "🤯 Sterling “Qarabağ”da?!", text: "Məlumata görə Qarabağ FK Çempionlar Liqası planı üçün heyətini gücləndirmək istəyir və ⭐ Raheem Sterlingi 6 aylıq icarəyə götürmək variantını nəzərdən keçirir!", img: "https://img.sanishtech.com/u/fbff4f980d58c61acae4c668776e4cbc.png" },
-        { id: 1, cat: 'yerli', date: '30 Yanvar, 2026', title: "Bəhlul Mustafazadə üçün Çindən Nəhəng Təklif", text: "Qarabağ və Çinin “Shenzhen Peng City” klubu arasında artıq razılaşma əldə olunub!", img: "https://img.sanishtech.com/u/57ff824c67ff81065cf7b4cf84fad8c0.png" },
-        { id: 2, cat: 'YERLI', date: '29 Yanvar, 2026', title: "🔥 QARABAĞIN PLAY-OFF RƏQİBİ BƏLLİ OLDU!", text: "🏆 Çempionlar Liqası play-off mərhələsində rəqibimiz Newcastle United!", img: "https://img.sanishtech.com/u/e3e82dabf9b79d40ae818c345fd226b9.png"},
-        { id: 3, cat: 'YERLI', date: '31 Yanvar, 2026', title: " RƏSMİ: Alina Nəhmədova “Partizan”da! 🇦🇿🖤🤍", text: "Azərbaycan qadın millisinin üzvü Alina Nəhmədova karyerasını Serbiyanın nəhəng klubu “Partizan”da davam etdirəcək. ⚽️ Futbolçunun son klubu “Neftçi” olub. Yeni komandasına uğurlar! 💪🌟", img: "https://img.sanishtech.com/u/7aa441fedaf5a2b6e5180410f6e26518.jpg"},
-        { id: 4, cat: 'YERLI', date: '31 Yanvar, 2026', title: "“Qarabağ”dan Leandro Andrade üçün QƏTİ QƏRAR!", text: "Klub rəhbərliyi futbolçunun qiymətini 3 milyon avro olaraq müəyyənləşdirib ✅ 📌 Bazarlıq da məhz 3 milyondan başlayacaq — bu məbləğdən aşağı gələn təkliflər isə heç nəzərə alınmayacaq. ⚽️ Futbolçunun özü yüksək təklif gəldiyi halda komandadan ayrılmaq istəyir, amma klubun qərarı qətidir:👉 Leandronun gedişinə yalnız ciddi məbləğ olarsa baxılacaq. 🔻 Onun buraxılmamasının əsas səbəbi isə son dönəmlərdəki performans enişidir — rəhbərlik daha ucuz satışa getmək istəmir.", img: "https://img.sanishtech.com/u/621eb34d8d1e4dc83d1b0c41dcf56553.png"},
-        { id: 5, cat: 'YERLI', date: '01 Fevral, 2026', title: "Jeremie Gnali “Qarabağ”a transfer olmağa çox yaxındır! 🔥", text: "AEK Larnaca-nın sol cinah müdafiəçisi Jeremie Gnali “Qarabağ”a transfer olmağa çox yaxındır! 🔥 23 yaşlı futbolçunun €100-150 dk aralığında baş tutacağı gözlenir. 182 sm boya malik olan gənc oyunçu əsasən müdafiənin çözümünde çıxış etsə də, sadece cinahın bir neçə mövqeyində də oynaya bilir. Cari, 14 maçta forma giydi ve 2 ay boyunca kalifiye oldu. ✅🦅 📌 Rəsmi: AEK Larnaka futbolçusudur", img: "https://img.sanishtech.com/u/4558ac7841cdaefd1e76ca68fc6aff13.jpeg"},
-        { id: 6, cat: 'Xarici', date: '01 Fevral, 2026', title: "Əfsanə dayanmaq bilmir… 1000 qola cəmi 39 qol qalıb ⚽🔥", text: "Bəzi adlar var ki, futbol tarixində sadəcə oynamaqla yox, iz qoymaqla yadda qalır. Yaş önəmli deyil, forma dəyişə bilər, amma mentalitet həmişə eyni qalır. 90+ qol, bitməyən ambisiya və qarşıda duran böyük hədəf… Tarix yazılmağa davam edir. ⚽👑", img: "https://img.sanishtech.com/u/23f4d66c505aee3a71e0354b6946f5cc.jpeg"},
-   ];
-
-    function changeTab(tab, category = 'all') {
-        const views = ['news-view', 'live-view', 'about-view', 'detail-view'];
-        views.forEach(v => document.getElementById(v).style.display = 'none');
-        document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
-
-        if (tab === 'news') {
-            document.getElementById('news-view').style.display = 'block';
-            document.getElementById('btn-' + category).classList.add('active');
-            renderGrid(category === 'all' ? allNews : allNews.filter(n => n.cat.toLowerCase() === category.toLowerCase()));
-        } else if (tab === 'live') {
-            document.getElementById('live-view').style.display = 'block';
-            document.getElementById('btn-live').classList.add('active');
-        } else if (tab === 'about') {
-            document.getElementById('about-view').style.display = 'block';
-            document.getElementById('btn-about').classList.add('active');
-        }
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    }
-
-    function renderGrid(data) {
-        const grid = document.getElementById('news-grid');
-        grid.innerHTML = data.map(n => `
-            <div class="card" onclick="openNews(${n.id})">
-                <div class="card-img-wrapper">
-                    <span class="cat-badge">${n.cat}</span>
-                    <img src="${n.img}">
-                </div>
-                <div class="card-info">
-                    <div style="font-size: 11px; color: var(--primary); margin-bottom: 8px;">${n.date}</div>
-                    <h3>${n.title}</h3>
-                </div>
-            </div>`).join('');
-    }
-
-    function openNews(id) {
-        const n = allNews.find(x => x.id === id);
-        document.getElementById('news-view').style.display = 'none';
-        document.getElementById('detail-view').style.display = 'block';
-        document.getElementById('detail-content').innerHTML = `
-            <h1>${n.title}</h1>
-            <div style="color:var(--text-dim); margin-bottom:20px;">📅 ${n.date} | 📂 ${n.cat.toUpperCase()}</div>
-            <img src="${n.img}" class="full-img">
-            <p style="font-size:1.1rem; line-height:1.8;">${n.text}</p>
-            <div class="share-section">
-                <span>Paylaş:</span>
-                <a href="#" class="share-btn"><i class="fab fa-whatsapp"></i></a>
-                <a href="https://www.threads.net/@offsidenews24" class="share-btn"><i class="fa-brands fa-threads"></i></a>
-            </div>
-        `;
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    }
-
-    renderGrid(allNews);
-</script>
 </body>
 </html>
