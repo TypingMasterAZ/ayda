@@ -1,285 +1,177 @@
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="az">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Google ilə qeydiyyat</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-  <meta charset="UTF-8">
-  <title>Google ilə giriş</title>
   <style>
     body{
-        display: flex;
-        flex-direction: row;
-        gap: 10px;
-        margin: 0;
-        height: 100vh;
-        overflow: hidden;
-        
-        
-
-    }
-    .salam{
-      height: 50px;
-      width: 174px;
-      border-radius: 20px;
-      font-size: 15px;
-       display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px
-      
-    }
-    .salam img{
-       width: 30px;
-       height: 22px
-     
-      
-    }
-    button{
-      border-radius: 20px;
-      font-family: 'poppins';
-      transition: 0.3s ease;
-      
-      
-
-    }
-    .salam:hover{
-      background-color: aquamarine;
-    }
-    button:hover{
-      background-color: aquamarine;
-      transform: scale(1.1);
+      display:flex;
+      flex-direction:row;
+      gap:10px;
+      margin:0;
+      height:100vh;
+      overflow:hidden;
+      font-family:'Poppins', sans-serif;
     }
     .esas{
-      background-color: aqua;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      align-items: center;
-      height: 100vh;
-      width: 50%;
-      justify-content: center;
-      border-radius: 0;
-      margin-right: 0;
-      
+      background-color:aqua;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:center;
+      height:100vh;
+      width:50%;
+      justify-content:center;
     }
-    
-  .picture{
-  width: 50%;
-  height: 100vh;
-  border-radius: 20px;
-  
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100vh;
-  /* şəkil tam sahəni doldursun */
-  border-radius: 0;
-  margin-left: 0;
-}
-.picture img{
-  width: 100%;
-  height: 100vh;
-  object-fit: cover;   /* şəkil tam sahəni doldursun */
-  border-radius: 0;
-  margin-left: 0;
-}
-h2{
-  text-align: center;
-  justify-content: center;
-  font-family: 'poppins';
-  font-weight: 600px;
-  padding-bottom: 50px;
-  margin: 5px;
-}
-.daxil ol a{
-    
-    
-    
-}
-h4 a{
-    text-decoration: none;
-    color: chocolate;
-    
-}
-h4{
-    font-family: 'poppins';
-}
-
-
-
-
-
+    h2{
+      text-align:center;
+      font-weight:600;
+      padding:0 20px;
+      margin:5px;
+      padding-bottom:40px;
+    }
+    button{
+      border-radius:20px;
+      font-family:'Poppins', sans-serif;
+      transition:0.3s ease;
+      border:none;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding:15px 25px;
+      font-size:18px;
+      width:220px;
+    }
+    button:hover{
+      background-color:aquamarine;
+      transform:scale(1.05);
+    }
+    button img{
+      width:26px;
+      height:26px;
+    }
+    h4{
+      font-weight:400;
+      margin-top:10px;
+    }
+    h4 a{
+      text-decoration:none;
+      color:chocolate;
+      font-weight:600;
+    }
+    .picture{
+      width:50%;
+      height:100vh;
+    }
+    .picture img{
+      width:100%;
+      height:100vh;
+      object-fit:cover;
+    }
   </style>
 
-  <!-- Firebase CDN -->
-<script type="module">
-  async function updateGlobalCounter() {
-    const name = "typingmaster qeydiyyat"; // Saytın üçün unikal ad
-    try {
-        // Alternativ stabil API xidməti
-        const response = await fetch(`https://api.counterapi.dev/v1/${name}/visit/up`);
-        const data = await response.json();
-        
-        // Konsolu təmizləyirik ki, xətalar görünməsin
-        console.clear();
-        
-        // Məlumatı yalnız sən görəcəksən
-        console.log("%c TypingMaster Qeydiyyat ADMIN PANEL ", "background: #39ff14; color: #000; font-weight: bold; padding: 5px;");
-        console.log("%c Ümumi Qlobal Ziyarətçi Sayı: " + data.count, "color: #39ff14; font-size: 14px;");
-    } catch (error) {
-        console.log("Statistika bazasına qoşulmaq mümkün olmadı.");
-    }
-}
+  <script type="module">
+    // ✅ Firebase imports (CDN)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
 
-// Səhifə açılan kimi işə sal
-updateGlobalCounter();
-    // Sayğac funksiyası - Səhifə yüklənən kimi işə düşür
-(function() {
-    // 1. Mövcud sayı götür və ya 0-dan başla
-    let count = localStorage.getItem('my_private_counter') || 0;
-    
-    // 2. Sayı 1 vahid artır
-    count = parseInt(count) + 1;
-    
-    // 3. Yeni sayı yadda saxla
-    localStorage.setItem('my_private_counter', count);
+    // ✅ SƏNİN YENİ FIREBASE CONFIG (salam-58d0a)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCYWC8P0meXFbyRoSA4uHkJmJRkPFlhwSQ",
+      authDomain: "salam-58d0a.firebaseapp.com",
+      projectId: "salam-58d0a",
+      storageBucket: "salam-58d0a.firebasestorage.app",
+      messagingSenderId: "703442504339",
+      appId: "1:703442504339:web:f9a6b1f54db80c4c829b66",
+      measurementId: "G-G1QX2TVF0C"
+    };
 
-    // 4. Konsolu təmizlə və nəticəni göstər
-    console.clear(); // Köhnə xətaları gizlətmək üçün
-    console.log("%c OFFSIDE24 ADMIN PANEL ", "background: #39ff14; color: #000; padding: 5px; font-weight: bold; border-radius: 4px;");
-    console.log("%c Ümumi daxilolma sayı: " + count, "color: #39ff14; font-size: 14px; font-family: sans-serif;");
-})();
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider } 
-from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { 
-  getFirestore, 
-  collection, 
-  query, 
-  where, 
-  getDocs, 
-  addDoc, 
-  serverTimestamp 
-} from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAjhmCJIZaLB3UmnOwm1NUqbIgvlmfQW2o",
-  authDomain: "typingmaster-185d7.firebaseapp.com",
-  projectId: "typingmaster-185d7",
-  storageBucket: "typingmaster-185d7.firebasestorage.app",
-  messagingSenderId: "1035769402672",
-  appId: "1:1035769402672:web:1e539808df0b40777a24f5"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
-
-window.googleLogin = async function () {
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const email = result.user.email;
-
-    // 🔍 EMAIL ARTİQ QEYDİYYATDADIRMI?
-    const q = query(
-      collection(db, "users"),
-      where("email", "==", email)
-    );
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-      alert("Bu email artıq qeydiyyatdan keçib! Zəhmət olmasa daxil olun.");
-      window.location.href = "https://typingmasteraz.github.io/ayda/daxil%20ol.html";
-      return;
+    // ✅ Düymə disable/enable üçün helper
+    function setBtnState(disabled, text) {
+      const btn = document.getElementById("googleBtn");
+      if (!btn) return;
+      btn.disabled = disabled;
+      btn.style.opacity = disabled ? "0.7" : "1";
+      btn.style.cursor = disabled ? "not-allowed" : "pointer";
+      if (text) btn.querySelector("span").textContent = text;
     }
 
-    // ✅ YENİ QEYDİYYAT – FIRESTORE
-    await addDoc(collection(db, "users"), {
-      email: email,
-      provider: "google",
-      createdAt: serverTimestamp()
-    });
+    // ✅ Google login funksiyası
+    window.googleLogin = async function () {
+      try {
+        setBtnState(true, "Gözləyin...");
 
-    alert("Qeydiyyat uğurla tamamlandı!");
-    localStorage.setItem("loggedInEmail", email);
-    window.location.href = "https://typingmasteraz.github.io/ayda/adiviyaz.html";
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
 
-  } catch (error) {
-    console.error(error);
-    alert("Google ilə qeydiyyat zamanı xəta baş verdi!");
-  }
-};
-</script>
+        if (!user) throw new Error("User tapılmadı.");
 
+        // ✅ users/{uid}
+        const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+
+        // Əgər user artıq varsa, sadəcə yönləndir
+        if (snap.exists()) {
+          localStorage.setItem("loggedInEmail", user.email || "");
+          localStorage.setItem("loggedInUid", user.uid);
+          window.location.href = "https://typingmasteraz.github.io/ayda/daxil%20ol.html";
+          return;
+        }
+
+        // ✅ İlk dəfədirsə — Firestore-a yaz
+        await setDoc(userRef, {
+          uid: user.uid,
+          email: user.email || "",
+          name: user.displayName || "",
+          photoURL: user.photoURL || "",
+          provider: "google",
+          createdAt: serverTimestamp()
+        });
+
+        localStorage.setItem("loggedInEmail", user.email || "");
+        localStorage.setItem("loggedInUid", user.uid);
+
+        alert("Qeydiyyat uğurla tamamlandı!");
+        window.location.href = "https://typingmasteraz.github.io/ayda/adiviyaz.html";
+
+      } catch (error) {
+        console.error(error);
+        alert("Xəta: " + (error?.message || "Naməlum xəta"));
+      } finally {
+        setBtnState(false, "Google ilə Qeydiyyat");
+      }
+    };
+  </script>
 </head>
 
-<body style="display:flex; justify-content:center; align-items:center; height:100vh;">
-<div class="esas">
+<body>
+  <div class="esas">
     <h2>TypingMaster ilə sürətli, dəqiq və peşəkar klaviatura yazma bacarığını inkişaf etdir!</h2>
-  <button onclick="googleLogin()" style="padding:15px 25px; font-size:18px; width: 174px;">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-    Google ilə Qeydiyyat
-  </button>
-<div class="daxil ol">
-<h4>Hesabın var? <a href="https://typingmasteraz.github.io/ayda/daxil%20ol.html">Daxil ol</a></h4>
 
-</div>  
+    <button id="googleBtn" onclick="googleLogin()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+      <span>Google ilə Qeydiyyat</span>
+    </button>
 
-</div>
-<div class="picture">
-  <img src="https://cdn.mos.cms.futurecdn.net/3kQCtpnfHoUq5cBsLqKTFk.jpg">
-</div>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getFirestore, doc, setDoc } 
-from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+    <div class="daxil-ol">
+      <h4>Hesabın var? <a href="https://typingmasteraz.github.io/ayda/daxil%20ol.html">Daxil ol</a></h4>
+    </div>
+  </div>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAjhmCJIZaLB3UmnOwm1NUqbIgvlmfQW2o",
-  authDomain: "typingmaster-185d7.firebaseapp.com",
-  projectId: "typingmaster-185d7",
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-document.getElementById("saveBtn").addEventListener("click", async () => {
-  const name = document.getElementById("name").value.trim();
-  const surname = document.getElementById("surname").value.trim();
-  const email = localStorage.getItem("loggedInEmail");
-
-  if (!email) {
-    alert("Sessiya tapılmadı, yenidən daxil olun");
-    window.location.href = "daxil ol.html";
-    return;
-  }
-
-  if (!name || !surname) {
-    alert("Ad və soyad boş ola bilməz!");
-    return;
-  }
-
-  await setDoc(doc(db, "users", email), {
-    email,
-    name,
-    surname,
-    updatedAt: new Date()
-  }, { merge: true });
-
-  localStorage.setItem(
-    "userProfile_" + email,
-    JSON.stringify({ name, surname })
-  );
-
-  window.location.href = "https://typingmasteraz.github.io/ayda/account.html";
-});
-</script>
-
+  <div class="picture">
+    <img src="https://cdn.mos.cms.futurecdn.net/3kQCtpnfHoUq5cBsLqKTFk.jpg" alt="cover">
+  </div>
 </body>
 </html>
