@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>8 Mart | Möcüzəvi Ana ✨</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --gold: #d4af37;
+            --pink: #ff4d6d;
+            --dark: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background: var(--dark); color: white;
+            font-family: 'Poppins', sans-serif; overflow-x: hidden;
+            transition: background 1.5s ease;
+            width: 100%;
+        }
+
+        #bg-canvas { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; }
+
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            padding: 20px;
+            background: radial-gradient(circle at center, rgba(255, 77, 109, 0.1) 0%, transparent 70%);
+        }
+
+        .instruction-box {
+            background: var(--glass); border: 2px solid var(--gold);
+            padding: 15px; border-radius: 20px; backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); animation: float 3s infinite;
+            margin-bottom: 20px; width: 90%; max-width: 400px;
+        }
+
+        @keyframes float { 0%, 100% {transform: translateY(0);} 50% {transform: translateY(-10px);} }
+
+        h1 {
+            font-family: 'Dancing Script', cursive; font-size: clamp(3rem, 15vw, 5rem);
+            color: var(--pink); text-shadow: 0 0 20px rgba(255, 77, 109, 0.6);
+            line-height: 1.2;
+        }
+
+        .best-mom-badge {
+            margin-top: 20px;
+            background: linear-gradient(45deg, var(--gold), #fff, var(--gold));
+            background-size: 200% auto;
+            color: #000; padding: 10px 20px; border-radius: 50px;
+            font-weight: bold; font-size: 0.9rem; box-shadow: 0 0 15px var(--gold);
+            animation: shine 3s linear infinite;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+
+        .game-section { padding: 60px 15px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .quiz-btn { 
+            background: var(--glass); border: 1px solid var(--gold); 
+            padding: 12px 20px; margin: 8px; border-radius: 12px; 
+            cursor: pointer; display: block; transition: 0.3s; 
+            color: white; width: 85%; margin-left: auto; margin-right: auto;
+            font-size: 0.95rem;
+        }
+
+        .wish-box { 
+            margin: 30px auto; width: 95%; max-width: 450px; 
+            padding: 25px; border-radius: 20px; border: 2px dashed var(--pink); 
+            background: rgba(255, 77, 109, 0.05); 
+        }
+
+        .section-title { font-family: 'Dancing Script', cursive; font-size: 2.8rem; color: var(--gold); text-align: center; margin-bottom: 20px; }
+
+        .wheel-box { position: relative; width: 280px; height: 280px; margin: 30px auto; }
+        #wheelCanvas { border-radius: 50%; border: 6px solid var(--gold); box-shadow: 0 0 30px rgba(212, 175, 55, 0.3); width: 100%; height: 100%; }
+        .pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 25px solid var(--gold); z-index: 10; }
+        .spin-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 55px; height: 55px; border-radius: 50%; border: none; background: white; font-weight: bold; cursor: pointer; z-index: 11; font-size: 0.9rem; }
+
+        #magic-touch { width: 100px; height: 100px; border: 3px solid var(--gold); border-radius: 50%; margin: 25px auto; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative; overflow: hidden; touch-action: none; transition: 0.5s; }
+        #touch-fill { position: absolute; bottom: 0; width: 100%; height: 0%; background: var(--pink); opacity: 0.5; }
+
+        /* KREATIV YAZI STILI */
+        #creative-msg { 
+            display: none; font-family: 'Dancing Script', cursive; font-size: 2.2rem; 
+            color: var(--gold); margin-top: 20px; animation: glowText 2s infinite alternate;
+            padding: 10px; line-height: 1.3;
+        }
+        @keyframes glowText { from { text-shadow: 0 0 10px #fff; transform: scale(1); } to { text-shadow: 0 0 25px var(--gold); transform: scale(1.05); } }
+
+        .envelope { position: relative; width: 260px; height: 160px; background: #9d0208; border-radius: 0 0 10px 10px; cursor: pointer; margin: 80px auto; }
+        .envelope::before { content: ""; position: absolute; top: 0; left: 0; border-left: 130px solid transparent; border-right: 130px solid transparent; border-top: 90px solid var(--pink); transform-origin: top; transition: 0.6s; z-index: 3; }
+        .letter { position: absolute; bottom: 5px; left: 10px; width: 240px; height: 150px; background: #fff; padding: 15px; border-radius: 5px; text-align: center; transition: 0.6s; z-index: 2; color: #333; font-size: 0.9rem; }
+        .envelope.open::before { transform: rotateX(180deg); }
+        .envelope.open .letter { transform: translateY(-120px); height: 240px; z-index: 4; }
+
+        .counter-container {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 30px 15px; border-radius: 25px; width: 90%; margin: 0 auto; border: 1px solid var(--glass);
+        }
+        #counter-num { 
+            font-size: 2.8rem; font-weight: 800; 
+            background: linear-gradient(to right, var(--gold), #fff, var(--gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 9999; padding: 20px; }
+        .modal-box { background: white; color: #333; padding: 30px; border-radius: 20px; width: 100%; max-width: 320px; text-align: center; border: 3px solid var(--gold); }
+
+        .magic-love-btn { position: fixed; bottom: 15px; right: 15px; width: 55px; height: 55px; background: var(--pink); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 5000; box-shadow: 0 0 10px var(--pink); font-size: 22px; }
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <section class="hero">
+        <div class="instruction-box">
+            <h3 style="color: var(--gold); font-size: 1.1rem;">🌹 Xoş Gəldin, Canım Anam!</h3>
+            <p style="font-size: 0.85rem;">Bu səhifə sənin üçün sehrlənib.<br>Aşağı sürüşdür...</p>
+        </div>
+        <h1>8 Mart</h1>
+        <div class="best-mom-badge">DÜNYANIN ƏN YAXŞI ANASI 👑</div>
+    </section>
+
+    <section class="game-section">
+        <h2 class="section-title">Kimdir O? ✨</h2>
+        <div class="quiz-btn" onclick="alert('MƏNİM CANIM ANAM! ❤️')">Dünyanın ən gözəl qadını?</div>
+        <div class="quiz-btn" onclick="alert('ƏLBƏTTƏ SƏN! 👑')">Evin əsl kraliçası?</div>
+        <div class="quiz-btn" onclick="alert('SƏNİN GÜLÜŞÜN! 😊')">Bizi ən çox xoşbəxt edən?</div>
+    </section>
+
+    <section class="game-section">
+        <h2 class="section-title">Bəxt Çarxı 🎡</h2>
+        <div class="wheel-box">
+            <div class="pointer"></div>
+            <canvas id="wheelCanvas" width="280" height="280"></canvas>
+            <button class="spin-btn" onclick="startSpin()">VUR!</button>
+        </div>
+    </section>
+
+    <section class="game-section">
+        <h2 class="section-title">Günün Arzusu ✨</h2>
+        <div class="wish-box">
+            <p id="wish-text" style="font-size: 1.1rem; min-height: 60px;">Düyməni bas və arzunu gör...</p>
+            <button class="quiz-btn" onclick="generateWish()" style="margin-top: 15px;">Yeni Arzu Seç 🪄</button>
+        </div>
+    </section>
+
+    <section class="game-section">
+        <h2 class="section-title">Sürprizə Toxun... ✨</h2>
+        <p style="font-size: 0.9rem; margin-bottom: 10px;">Barmağını dairədə axıra qədər saxla</p>
+        <div id="magic-touch">
+            <div id="touch-fill"></div>
+            <span style="font-size: 35px; z-index: 5;">👆</span>
+        </div>
+        <div id="creative-msg">SƏN MƏNİM GÜNƏŞİMSƏN, ANAM! ☀️❤️</div>
+    </section>
+
+    <section class="game-section">
+        <h2 class="section-title" style="color: var(--pink);">Sənə Məktub 💌</h2>
+        <div class="envelope" onclick="this.classList.toggle('open'); launchHearts();">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 25px; z-index: 5;">❤️</div>
+            <div class="letter">
+                <h3>Əziz Ana!</h3>
+                <p>Həyatımın mənası sən olduğun üçün çox şanslıyam. Bayramın mübarək!</p>
+                <div style="margin-top:15px; font-weight:bold; color:var(--gold);"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="game-section">
+        <div class="counter-container">
+            <h2 style="font-family: 'Dancing Script'; font-size: 2rem; margin-bottom: 15px;">Səni nə qədər sevirəm?</h2>
+            <h2 style="font-family:'Dancing Script' ;">Hər saniyə artır</h2>
+            <div id="counter-num">1,000,000</div>
+        </div>
+    </section>
+
+    <div class="magic-love-btn" onclick="launchHearts(); createFlowerRain();">💖</div>
+
+    <div id="modal" onclick="this.style.display='none'">
+        <div class="modal-box"><h1 style="color: var(--pink); font-size: 1.5rem;">Təbriklər! 🎉</h1><p id="giftText" style="font-size: 1.2rem; margin-top:10px; font-weight: bold;"></p></div>
+    </div>
+
+    <script>
+        const bg = document.getElementById('bg-canvas');
+        const bctx = bg.getContext('2d');
+        function resize() { bg.width = window.innerWidth; bg.height = window.innerHeight; }
+        resize(); window.onresize = resize;
+        
+        let stars = Array(100).fill().map(() => ({ x: Math.random()*bg.width, y: Math.random()*bg.height, size: Math.random()*1.5, speed: Math.random()*0.3 }));
+        function drawStars() {
+            bctx.clearRect(0,0,bg.width,bg.height); bctx.fillStyle = "white";
+            stars.forEach(s => { bctx.beginPath(); bctx.arc(s.x, s.y, s.size, 0, Math.PI*2); bctx.fill(); s.y += s.speed; if(s.y > bg.height) s.y = 0; });
+            requestAnimationFrame(drawStars);
+        }
+        drawStars();
+
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        const gifts = ["Qızıl Üzük", "Gül Buketi", "Yeni Ətir", "Səyahət", "Yeni Don", "Şam Yeməyi"];
+        const colors = ["#d4af37", "#111", "#ff4d6d", "#111", "#d4af37", "#111"];
+        let currentAngle = 0;
+
+        function drawWheel() {
+            const arc = (Math.PI * 2) / gifts.length;
+            ctx.clearRect(0, 0, 280, 280);
+            gifts.forEach((g, i) => {
+                ctx.beginPath(); ctx.fillStyle = colors[i]; ctx.moveTo(140, 140); ctx.arc(140, 140, 135, currentAngle + i*arc, currentAngle + (i+1)*arc); ctx.fill();
+                ctx.save(); ctx.translate(140, 140); ctx.rotate(currentAngle + i*arc + arc/2); ctx.fillStyle = "white"; ctx.font = "bold 12px Poppins"; ctx.fillText(g, 55, 5); ctx.restore();
+            });
+        }
+        drawWheel();
+
+        function startSpin() {
+            let duration = 4000; let totalRot = Math.PI*2*(10 + Math.random()*5); let start = null; let initialAngle = currentAngle;
+            function animate(time) {
+                if(!start) start = time; let progress = Math.min((time-start)/duration, 1);
+                currentAngle = initialAngle + totalRot * (1 - Math.pow(1-progress, 3));
+                drawWheel();
+                if(progress < 1) requestAnimationFrame(animate);
+                else {
+                    const winIdx = Math.floor(((3*Math.PI/2 - (currentAngle%(Math.PI*2)) + Math.PI*2)%(Math.PI*2)) / (Math.PI*2/gifts.length));
+                    document.getElementById('giftText').innerText = "Qazandın: " + gifts[winIdx];
+                    document.getElementById('modal').style.display = 'flex';
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        function generateWish() {
+            const wishes = ["Allah səni qorusun! ❤️", "Gülüşün solmasın! 🌟", "Canın sağ olsun! 🤲", "Sən bizim hər şeyimizsən! 👑"];
+            document.getElementById('wish-text').innerText = wishes[Math.floor(Math.random()*wishes.length)];
+        }
+
+        // BARMAQ İZİ LOGIKASI (YENİLƏNDİ)
+        let touchArea = document.getElementById('magic-touch');
+        let touchFill = document.getElementById('touch-fill');
+        let creativeMsg = document.getElementById('creative-msg');
+        let prog = 0; let active = false;
+
+        function handleStart(e) { e.preventDefault(); active = true; runProg(); }
+        function handleEnd() { 
+            active = false; 
+            if(prog < 100) { 
+                prog = 0; 
+                touchFill.style.height = "0%"; 
+            } 
+        }
+
+        touchArea.addEventListener('touchstart', handleStart);
+        touchArea.addEventListener('touchend', handleEnd);
+        touchArea.addEventListener('mousedown', handleStart);
+        window.addEventListener('mouseup', handleEnd);
+
+        function runProg() {
+            if(active && prog < 100) {
+                prog += 2; 
+                touchFill.style.height = prog + "%";
+                if(prog >= 100) {
+                    // FON RENGİNİ DEYISDIR VE YAZINI GOSTER
+                    document.body.style.background = "#2d001a"; // Kreativ fon rengi
+                    creativeMsg.style.display = "block";
+                    touchArea.style.borderColor = "var(--pink)";
+                    touchArea.style.boxShadow = "0 0 30px var(--pink)";
+                    launchHearts();
+                    createFlowerRain();
+                } else { 
+                    setTimeout(runProg, 40); 
+                }
+            }
+        }
+
+        function createFlowerRain() {
+            for(let i=0; i<10; i++) {
+                const f = document.createElement('div'); f.innerHTML = "🌹"; f.style.position = 'fixed'; f.style.left = Math.random()*90+'vw'; f.style.top = '-50px'; f.style.fontSize = '25px'; f.style.zIndex = '6000';
+                document.body.appendChild(f);
+                f.animate([{top: '-50px'}, {top: '110vh'}], {duration: 4000}).onfinish = () => f.remove();
+            }
+        }
+
+        function launchHearts() {
+            for(let i=0; i<15; i++) {
+                const h = document.createElement('div'); h.innerHTML = "💖"; h.style.position = 'fixed'; h.style.left = Math.random()*90+'vw'; h.style.top = '100vh'; h.style.fontSize = '20px'; h.style.zIndex = '7000';
+                document.body.appendChild(h);
+                h.animate([{transform: 'translateY(0)'}, {transform: 'translateY(-110vh)'}], {duration: 3000}).onfinish = () => h.remove();
+            }
+        }
+
+        let loveCount = 1000000;
+        setInterval(() => { loveCount += 2; document.getElementById('counter-num').innerText = loveCount.toLocaleString(); }, 1000);
+    </script>
+</body>
+</html>
