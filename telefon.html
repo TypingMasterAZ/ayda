@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="az">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="TypingMaster Əlaqə — təklif, şikayət və əməkdaşlıq üçün yaz." />
+  <title>Əlaqə — TypingMaster</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{--bg1:#0f172a;--bg2:#07103a;--card:#0b1220;--accent:#7c3aed;--glass:rgba(255,255,255,0.04);--muted:rgba(255,255,255,0.6)}
+    *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    html,body{height:100%;margin:0}
+    body{
+      background:linear-gradient(135deg,var(--bg1),var(--bg2));
+      color:#e6eef8;
+      display:flex;
+      justify-content:center;
+      padding:32px;
+      overflow:auto;
+    }
+    .container{width:100%;max-width:980px;margin:0 auto;}
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+      border-radius:18px;padding:28px;
+      box-shadow:0 10px 30px rgba(2,6,23,0.7);
+      backdrop-filter: blur(6px);
+      border:1px solid rgba(255,255,255,0.05);
+    }
+
+    header{
+      display:grid;
+      grid-template-columns: 56px 1fr auto;
+      align-items:center;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .logo{
+      width:56px;height:56px;border-radius:12px;overflow:hidden;
+      background:rgba(255,255,255,0.04);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .logo img{width:100%;height:100%;object-fit:cover}
+    header h1{margin:0;font-size:20px}
+    .nav{justify-self:end;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+    .nav a{
+      color:inherit;text-decoration:none;font-weight:700;
+      padding:8px 10px;border-radius:10px;
+      border:1px solid rgba(255,255,255,0.06);
+      background:rgba(255,255,255,0.02);
+    }
+    .nav a:hover{border-color:rgba(124,58,237,0.35)}
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:18px;
+      margin-top:16px;
+    }
+
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+      padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.04)
+    }
+    .panel h2{margin:0 0 10px 0;font-size:18px}
+    .muted{color:var(--muted);line-height:1.6;font-size:14px}
+
+    label{display:block;margin:10px 0 6px 0;color:var(--muted);font-size:13px}
+    input, textarea, select{
+      width:100%;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.08);
+      background:rgba(255,255,255,0.02);
+      color:inherit;
+      outline:none;
+    }
+    textarea{min-height:130px;resize:vertical}
+    input:focus, textarea:focus, select:focus{border-color:rgba(124,58,237,0.45)}
+
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    button{
+      background:var(--accent);
+      border:none;color:white;
+      padding:12px 14px;border-radius:12px;
+      font-weight:800;cursor:pointer;width:100%;
+      margin-top:12px;
+    }
+    button:disabled{opacity:.6;cursor:not-allowed}
+    .success,.error{
+      margin-top:12px;
+      padding:10px 12px;border-radius:12px;
+      font-size:14px;font-weight:700;
+      display:none;
+    }
+    .success{background:rgba(34,197,94,0.14);border:1px solid rgba(34,197,94,0.25)}
+    .error{background:rgba(239,68,68,0.14);border:1px solid rgba(239,68,68,0.25)}
+
+    footer{margin-top:16px;text-align:center;color:var(--muted);font-size:13px}
+
+    @media(max-width:880px){
+      .grid{grid-template-columns:1fr}
+      header{grid-template-columns:56px 1fr}
+      .nav{grid-column:1 / -1;justify-self:center}
+      header h1{text-align:left}
+    }
+    select[name="subject"]{
+  background:black !important;
+  color:white;
+}
+
+select[name="subject"] option{
+  background:black;
+  color:white;
+}
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="card">
+      <header>
+        <div class="logo">
+          <img src="https://i.postimg.cc/9Qy6YWFZ/Chat-GPT-Image-Nov-27-2025-09-35-45-PM.png" alt="Logo">
+        </div>
+        <h1>Əlaqə — TypingMaster</h1>
+        <nav class="nav">
+          <a href="index.html">Ana səhifə</a>
+          <a href="https://typingmasteraz.github.io/ayda/privacy.html">Məxfilik</a>
+        </nav>
+      </header>
+
+      <div class="grid">
+        <!-- FORM -->
+        <section class="panel">
+          <h2>Bizə yaz</h2>
+          <p class="muted">
+            Təklifin, şikayətin və ya əməkdaşlıq istəyin varsa, aşağıdakı formu doldur.
+          </p>
+
+          <!-- Formspree: ACTION_URL yerinə sənin linkin gələcək -->
+          <form id="contactForm" action="https://formspree.io/f/mojkarro" method="POST">
+            <div class="row">
+              <div>
+                <label>Ad</label>
+                <input name="name" type="text" placeholder="Məs: Elten" required />
+              </div>
+              <div>
+                <label>Email</label>
+                <input name="email" type="email" placeholder="məs: example@gmail.com" required />
+              </div>
+            </div>
+
+            <label>Mövzu</label>
+            <select name="subject" required>
+              <option value="" disabled selected>Seç...</option>
+              <option>Texniki problem</option>
+              <option>Təklif</option>
+              <option>Şikayət</option>
+              <option>Əməkdaşlıq</option>
+              <option>Digər</option>
+            </select>
+
+            <label>Mesaj</label>
+            <textarea name="message" placeholder="Mesajını yaz..." required></textarea>
+
+            <!-- spam əleyhinə gizli sahə -->
+            <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off"/>
+
+            <button id="sendBtn" type="submit">Göndər</button>
+
+            <div class="success" id="successBox">✅ Mesaj göndərildi! Tezliklə cavab yazacağıq.</div>
+            <div class="error" id="errorBox">❌ Xəta oldu. Zəhmət olmasa yenidən yoxla.</div>
+          </form>
+        </section>
+
+        <!-- INFO -->
+        <aside class="panel">
+          <h2>Əlaqə məlumatı</h2>
+          <p class="muted">
+            İstəsən buraya öz emailini / sosial şəbəkə linklərini əlavə edə bilərik.
+          </p>
+
+          <p class="muted" style="margin-top:12px">
+            <strong>📌 Qeyd:</strong> Form işləsin deyə Formspree linkini qoşmaq lazımdır.
+          </p>
+
+          <p class="muted" style="margin-top:12px">
+            <strong>💡 Məsləhət:</strong> Mesaj göndəriləndən sonra istifadəçiyə “success” bildirişi çıxır.
+          </p>
+        </aside>
+      </div>
+
+      <footer>© 2025 TypingMaster. Bütün hüquqlar qorunur.</footer>
+    </div>
+  </div>
+
+  <script>
+    // Formspree-dən istifadə edəndə səhifə reload olmasın deyə AJAX göndəriş
+    const form = document.getElementById("contactForm");
+    const btn = document.getElementById("sendBtn");
+    const ok = document.getElementById("successBox");
+    const err = document.getElementById("errorBox");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      ok.style.display = "none";
+      err.style.display = "none";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { "Accept": "application/json" }
+        });
+
+        if (res.ok) {
+          form.reset();
+          ok.style.display = "block";
+        } else {
+          err.style.display = "block";
+        }
+      } catch {
+        err.style.display = "block";
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
